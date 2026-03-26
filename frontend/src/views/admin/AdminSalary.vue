@@ -7,7 +7,7 @@
                     <SidebarAdmin />
                 </div>
 
-                <div class="col-9">  
+                <div class="col-9">
                     <div class="row">
                         <div class="col-10">
                             <h1 class="mt-3">Quản lý lương</h1>
@@ -82,7 +82,7 @@ import TheHeader from '../../components/TheHeader.vue';
 import SidebarAdmin from '../../components/SidebarAdmin.vue';
 
 import { ref, onMounted } from 'vue'
-import axios from 'axios'
+import http from "../../services/http";
 
 const salaries = ref([])
 
@@ -103,31 +103,14 @@ const form = ref({
 const employees = ref([])
 
 const fetchEmployees = async () => {
-    const token = localStorage.getItem('token')
-
-    const res = await axios.get('http://localhost:8000/api/admin/employees',
-        {
-            headers: {
-                Authorization: `Bearer ${token}`
-            }
-        }
-    )
+    const res = await http.get('/admin/employees')
 
     employees.value = res.data
 }
 
 const fetchAllSalaries = async () => {
     try {
-        const token = localStorage.getItem('token')
-
-        const res = await axios.get(
-            'http://localhost:8000/api/admin/salaries',
-            {
-                headers: {
-                    Authorization: `Bearer ${token}`
-                }
-            }
-        )
+        const res = await http.get('/admin/salaries')
 
         salaries.value = res.data
     } catch (error) {
@@ -137,23 +120,30 @@ const fetchAllSalaries = async () => {
 
 const handleSubmit = async () => {
     try {
-        const token = localStorage.getItem('token')
-
-        const res = await axios.post(
-            'http://localhost:8000/api/admin/salaries',
-            form.value,
-            {
-                headers: {
-                    Authorization: `Bearer ${token}`
-                }
-            }
-        )
+        const res = await http.post(
+            '/admin/salaries',
+            form.value)
 
         salaries.value.unshift(res.data)
 
         showModal.value = false
     } catch (error) {
         console.log(error.response.data)
+    }
+}
+
+const searchSalary = async () => {
+    try {
+        if (!selectedMonth.value || !selectedYear.value) {
+            alert("Vui lòng chọn tháng và nhập năm")
+            return
+        }
+
+        const res = await http.get(`/admin/salaries?month=${selectedMonth.value}&year=${selectedYear.value}`)
+
+        salaries.value = res.data
+    } catch (error) {
+        console.log(error)
     }
 }
 

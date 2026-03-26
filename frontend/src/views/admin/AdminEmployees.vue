@@ -130,7 +130,7 @@ import TheHeader from '../../components/TheHeader.vue';
 import SidebarAdmin from '../../components/SidebarAdmin.vue';
 
 import { ref, onMounted, reactive } from 'vue';
-import axios from 'axios'
+import http from "../../services/http";
 
 const users = ref([])
 const totalUsers = ref(0)
@@ -145,15 +145,7 @@ const fetchUsers = async () => {
 
 
     try {
-        const token = localStorage.getItem('token')
-
-        const response = await axios.get('http://127.0.0.1:8000/api/admin/users',
-            {
-                headers: {
-                    Authorization: `Bearer ${token}`
-                }
-            }
-        )
+        const response = await http.get('/admin/users')
 
         totalUsers.value = response.data.total;
         users.value = response.data.users;
@@ -216,17 +208,7 @@ const handleOk = () => {
         .validate()
         .then(async () => {
             try {
-                const token = localStorage.getItem('token')
-
-                await axios.post(
-                    'http://127.0.0.1:8000/api/admin/employees',
-                    addUser,
-                    {
-                        headers: {
-                            Authorization: `Bearer ${token}`
-                        }
-                    }
-                );
+                await http.post('/admin/employees', addUser);
 
                 await fetchUsers();
                 open.value = false;
@@ -268,20 +250,12 @@ const editUser = (user) => {
 
 const updateUser = async () => {
     try {
-        const token = localStorage.getItem('token')
-
-        await axios.put(`http://localhost:8000/api/admin/users/${editForm.id}`, {
+        await http.put(`/admin/users/${editForm.id}`, {
             name: editForm.name,
             email: editForm.email,
             position: editForm.position,
             department: editForm.department
-        },
-            {
-                headers: {
-                    Authorization: `Bearer ${token}`
-                }
-            }
-        )
+        })
 
         isEditModalOpen.value = false
         await fetchUsers()
@@ -299,15 +273,7 @@ const deleteUser = async () => {
     if (!selectedUser.value?.id) return
 
     try {
-        const token = localStorage.getItem('token')
-
-        await axios.delete(`http://localhost:8000/api/admin/users/${selectedUser.value.id}`,
-            {
-                headers: {
-                    Authorization: `Bearer ${token}`
-                }
-            }
-        )
+        await http.delete(`/admin/users/${selectedUser.value.id}`)
 
         isDeleteModalOpen.value = false
         await fetchUsers()

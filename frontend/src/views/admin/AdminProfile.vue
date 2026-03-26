@@ -68,7 +68,7 @@ import TheHeader from '../../components/TheHeader.vue';
 import SidebarAdmin from '../../components/SidebarAdmin.vue';
 
 import { ref, onMounted } from 'vue'
-import axios from 'axios'
+import http from "../../services/http";
 import { message } from 'ant-design-vue'  
 
 const profile = ref({
@@ -84,29 +84,14 @@ const passwordForm = ref({
 })
 
 const fetchProfile = async () => {
-    const token = localStorage.getItem('token')
-
-    const res = await axios.get(
-        'http://localhost:8000/api/admin/profile',
-        {
-            headers: { Authorization: `Bearer ${token}` }
-        }
-    )
+    const res = await http.get('/admin/profile')
 
     profile.value = res.data.data
 }
 
 const updateProfile = async () => {
     try {
-        const token = localStorage.getItem('token')
-
-        const res = await axios.put(
-            'http://localhost:8000/api/admin/profile',
-            profile.value,
-            {
-                headers: { Authorization: `Bearer ${token}` }
-            }
-        )
+        const res = await http.put('/admin/profile')
 
         message.success(res.data.message)
     } catch(error) {
@@ -116,17 +101,7 @@ const updateProfile = async () => {
 
 const changePassword = async () => {
     try {
-        const token = localStorage.getItem('token')
-
-        const res = await axios.put(
-            'http://localhost:8000/api/admin/change-password',
-            passwordForm.value,
-            {
-                headers: {
-                    Authorization: `Bearer ${token}`
-                }
-            }
-        )
+        const res = await http.put('/admin/change-password', passwordForm.value)
 
         message.success(res.data.message)
 

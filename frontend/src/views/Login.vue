@@ -24,7 +24,7 @@
 
 <script setup>
 import { ref } from 'vue'
-import axios from 'axios'
+import http from "../services/http";
 import { useRouter } from 'vue-router'
 import { useUserStore } from '../stores/user'
 
@@ -36,7 +36,7 @@ const userStore = useUserStore()
 
 async function handleLogin() {
   try {
-    const response = await axios.post('http://localhost:8000/api/login', {
+    const response = await http.post('/login', {
       email: email.value,
       password: password.value
     })

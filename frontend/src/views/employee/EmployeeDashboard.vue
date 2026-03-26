@@ -1,53 +1,155 @@
 <template>
     <div>
+        <!-- Header -->
         <TheHeader />
-        <div class="container-fluid">
+
+        <div class="container-fluid mt-3">
+            <!-- Nút mở sidebar cho mobile -->
+            <a-button @click="showSidebar = true" class="d-lg-none mb-3">
+                <i class="fa-solid fa-bars"></i>
+            </a-button>
+
+            <!-- Sidebar drawer cho mobile -->
+            <a-drawer :visible="showSidebar" placement="left" width="260" @close="showSidebar = false"
+                class="d-lg-none">
+                <SidebarEmployee />
+            </a-drawer>
+
             <div class="row">
-                <div class="col-3">
+                <!-- Sidebar desktop -->
+                <div class="d-none d-lg-block col-lg-3">
                     <SidebarEmployee />
                 </div>
-                <div class="col-9">
-                    <div class="row">
-                        <div class="col-10">
-                            <h1>Bảng điều khiển</h1>
+
+                <!-- Nội dung chính -->
+                <div class="col-12 col-lg-9">
+                    <!-- Header bảng điều khiển -->
+                    <div
+                        class="d-flex flex-column flex-lg-row justify-content-between align-items-start align-items-lg-center mt-3 gap-2">
+                        <h1 class="mb-0">Bảng điều khiển</h1>
+                        <a-button type="primary" class="d-block d-sm-inline-block" @click="goProfile">
+                            Xem hồ sơ
+                        </a-button>
+                    </div>
+
+                    <!-- Các card thông tin -->
+                    <div class="row mt-4 g-3">
+                        <!-- Thông tin cá nhân -->
+                        <div class="col-12 col-xl-4">
+                            <div class="card p-3 h-100">
+                                <h2 class="mb-3">Thông tin cá nhân</h2>
+                                <p><strong>Họ tên:</strong> {{ userStore.user?.name }}</p>
+                                <p><strong>Email:</strong> {{ userStore.user?.email }}</p>
+                                <p><strong>Vị trí:</strong> {{ userStore.user?.employee.position }}</p>
+                                <p><strong>Phòng ban:</strong> {{ userStore.user?.employee.department }}</p>
+                                <p>
+                                    <strong>Trạng thái:</strong>
+                                    <span class="status-badge">{{ userStore.user?.employee.status }}</span>
+                                </p>
+                            </div>
                         </div>
-                        <div class="col-2 mt-3">
-                            <a-button>Xem hồ sơ</a-button>
+
+                        <!-- Lịch làm việc -->
+                        <div class="col-12 col-xl-8">
+                            <div class="card p-3 h-100">
+                                <h2 class="mb-3">Lịch làm việc</h2>
+                            </div>
                         </div>
                     </div>
 
-                    <div class="row">
-                        <div class="col-4 border border-secondary">  
-                            <h2>Thông tin cá nhân</h2>
-                            <p>Họ tên: {{ userStore.user?.name }}</p>
-                            <p>Email: {{ userStore.user?.email }}</p>
-                            <p>Vị trí: {{ userStore.user?.employee.position }}</p>
-                            <p>Phòng ban: {{ userStore.user?.employee.department }}</p>
-                            <p>Trạng thái: <span style="background-color: green; color: white; padding: 8px; border-radius:8px;">{{
-                                    userStore.user?.employee.status }}</span></p>
-                        </div>
-                        <div class="col-8 border border-secondary">
-                            <h2>Lịch làm việc</h2>
+                    <div class="row mt-4">
+                        <div class="col-12">
+                            <div class="card p-3">
+                                <div class="d-flex justify-content-between align-items-center mb-3">
+                                    <h2 class="mb-0">Lịch sử đơn nghỉ phép</h2>
+                                    <a-button type="primary" @click="goToLeaves">Xem đơn nghỉ phép</a-button>
+                                </div>
+
+                                <div class="table-responsive mt-2">
+                                    <table class="table">
+                                        <thead>
+                                            <tr>
+                                                <th scope="col">Ngày bắt đầu</th>
+                                                <th class="d-none d-md-table-cell" scope="col">Ngày kết thúc</th>
+                                                <th class="d-none d-lg-table-cell" scope="col">Số ngày</th>
+                                                <th scope="col">Loại nghỉ</th>
+                                                <th class="d-none d-lg-table-cell" scope="col">Lý do</th>
+                                                <th scope="col">Trạng thái</th>
+                                                <th class="d-none d-lg-table-cell" scope="col">Ngày nộp</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr v-for="leave in leaveData" :key="leave.id">
+                                                <td>{{ leave.start_date }}</td>
+                                                <td class="d-none d-md-table-cell">{{ leave.end_date }}</td>
+                                                <td class="d-none d-lg-table-cell">
+                                                    {{ Math.ceil((new Date(leave.end_date) - new Date(leave.start_date))
+                                                    / (1000 * 60 * 60 * 24)) + 1 }}
+                                                </td>
+                                                <td>{{ leave.type }}</td>
+                                                <td class="d-none d-lg-table-cell">{{ leave.reason }}</td>
+                                                <td>
+                                                    <span :class="statusClass(leave.status)">{{ leave.status }}</span>
+                                                </td>
+                                                <td class="d-none d-lg-table-cell">{{ leave.created_at }}</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
                         </div>
                     </div>
+
                 </div>
             </div>
         </div>
     </div>
 </template>
-  
+
 <script setup>
 import TheHeader from '../../components/TheHeader.vue';
 import SidebarEmployee from '../../components/SidebarEmployee.vue';
-import { onMounted } from 'vue';
-import axios from 'axios'
-
+import { ref, onMounted } from 'vue';
+import http from "../../services/http";
 import { useUserStore } from '../../stores/user';
+import { useRouter } from 'vue-router'
 
+const router = useRouter()
 const userStore = useUserStore()
+const showSidebar = ref(false)
+const leaveData = ref([]);
+
+const fetchLeaveHistory = async () => {
+    try {
+        const res = await http.get('/leaves');
+        leaveData.value = res.data.data.slice(0, 5); // chỉ lấy 5 đơn gần nhất
+    } catch (error) {
+        console.log('Không lấy được lịch sử nghỉ phép:', error);
+    }
+};
+
+const goProfile = () => {
+    router.push('/employee/file')
+}
+
+const goToLeaves = () => {
+    router.push('/employee/leaves')
+}
+
+const statusClass = (status) => {
+    const value = (status || '').toLowerCase()
+
+    if (value.includes('đã duyệt')) return 'status-approved'
+    if (value.includes('từ chối')) return 'status-rejected'
+    if (value.includes('chờ duyệt')) return 'status-pending'
+
+    return 'status-default'
+}
 
 onMounted(async () => {
     try {
+        const token = localStorage.getItem('token')
+
         if (!userStore.user) {
             const cachedUser = localStorage.getItem('user')
             if (cachedUser) {
@@ -55,15 +157,8 @@ onMounted(async () => {
             }
         }
 
-        const token = localStorage.getItem('token')
-
         if (!userStore.user && token) {
-            const response = await axios.get('http://localhost:8000/api/user', {
-                headers: {
-                    Authorization: `Bearer ${token}`
-                }
-            })
-
+            const response = await http.get('/user')
             userStore.setUser(response.data)
             localStorage.setItem('user', JSON.stringify(response.data))
         }
@@ -74,4 +169,49 @@ onMounted(async () => {
     }
 })
 
+onMounted(() => {
+    fetchLeaveHistory();
+});
 </script>
+
+<style scoped>
+.card {
+    background-color: #f8f9fa;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    border: none;
+}
+
+.card h2 {
+    font-weight: 500;
+}
+
+.status-badge {
+    background-color: green;
+    color: white;
+    padding: 6px 12px;
+    border-radius: 8px;
+    font-weight: 500;
+    font-size: 0.9rem;
+}
+
+.status-approved {
+    color: #198754;
+    font-weight: 600;
+}
+
+.status-rejected {
+    color: #dc3545;
+    font-weight: 600;
+}
+
+.status-pending {
+    color: #fd7e14;
+    font-weight: 600;
+}
+
+.status-default {
+    color: #6c757d;
+    font-weight: 600;
+}
+</style>

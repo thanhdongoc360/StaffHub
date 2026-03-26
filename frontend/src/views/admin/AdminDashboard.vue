@@ -102,22 +102,14 @@ import SidebarAdmin from '../../components/SidebarAdmin.vue';
 
 import { useRouter } from 'vue-router'
 import { ref, onMounted } from 'vue';
-import axios from 'axios'
+import http from "../../services/http";
 
 const users = ref([])
 const totalUsers = ref(0)
 
 const fetchUsers = async () => {
-    const token = localStorage.getItem('token')
-
     try {
-        const response = await axios.get('http://127.0.0.1:8000/api/admin/dashboard',
-            {
-                headers: {
-                    Authorization: `Bearer ${token}`
-                }
-            }
-        )
+        const response = await http.get('/admin/dashboard')
 
         totalUsers.value = response.data.total;
         users.value = response.data.users;

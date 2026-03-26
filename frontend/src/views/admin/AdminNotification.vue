@@ -64,23 +64,14 @@ import TheHeader from '../../components/TheHeader.vue';
 import SidebarAdmin from '../../components/SidebarAdmin.vue';
 
 import { ref, onMounted, computed } from 'vue'
-import axios from 'axios'
+import http from "../../services/http";
 
 const notifications = ref([])
 const filterType = ref('all')
 
 const fetchNotifications = async () => {
     try {
-        const token = localStorage.getItem('token')
-
-        const res = await axios.get(
-            'http://localhost:8000/api/notifications',
-            {
-                headers: {
-                    Authorization: `Bearer ${token}`
-                }
-            }
-        )
+        const res = await http.get('/notifications')
 
         notifications.value = res.data.data ?? []
     } catch (error) {
@@ -104,17 +95,7 @@ const markAsRead = async (noti) => {
     if (noti.is_read) return
 
     try {
-        const token = localStorage.getItem('token')
-
-        await axios.put(
-            `http://localhost:8000/api/notifications/${noti.id}/read`,
-            {},
-            {
-                headers: {
-                    Authorization: `Bearer ${token}`
-                }
-            }
-        )
+        await http.put(`/notifications/${noti.id}/read`)
 
         noti.is_read = true
     } catch (error) {
@@ -124,17 +105,7 @@ const markAsRead = async (noti) => {
 
 const markAllAsRead = async () => {
     try {
-        const token = localStorage.getItem('token')
-
-        await axios.put(
-            'http://localhost:8000/api/notifications/read-all',
-            {},
-            {
-                headers: {
-                    Authorization: `Bearer ${token}`
-                }
-            }
-        )
+        await http.put('/notifications/read-all')
 
         notifications.value.forEach(noti => {
             noti.is_read = true

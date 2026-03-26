@@ -64,25 +64,15 @@
 
 <script setup>
 import { ref, onMounted } from 'vue'
-import axios from 'axios'
+import http from "../../services/http";
 import TheHeader from '../../components/TheHeader.vue';
 import SidebarAdmin from '../../components/SidebarAdmin.vue'
 
 const leaves = ref([])
 
 const fetchLeaves = async () => {
-
-
     try {
-        const token = localStorage.getItem('token')
-
-        const res = await axios.get('http://localhost:8000/api/admin/leaves',
-            {
-                headers: {
-                    Authorization: `Bearer ${token}`
-                }
-            }
-        )
+        const res = await http.get('/admin/leaves')
         leaves.value = res.data.data || []
     } catch (error) {
         console.log('Không tải được danh sách đơn nghỉ phép:', error)
@@ -92,16 +82,7 @@ const fetchLeaves = async () => {
 
 const approve = async (id) => {
     try {
-        const token = localStorage.getItem('token')
-
-        await axios.post(`http://localhost:8000/api/admin/leaves/${id}/approve`,
-            {},
-            {
-                headers: {
-                    Authorization: `Bearer ${token}`
-                }
-            }
-        );
+        await http.post(`/admin/leaves/${id}/approve`);
 
         fetchLeaves()
     } catch (error) {
@@ -111,16 +92,7 @@ const approve = async (id) => {
 
 const reject = async (id) => {
     try {
-        const token = localStorage.getItem('token')
-
-        await axios.post(`http://localhost:8000/api/admin/leaves/${id}/reject`,
-            {},
-            {
-                headers: {
-                    Authorization: `Bearer ${token}`
-                }
-            }
-        )
+        await axios.http(`/admin/leaves/${id}/reject`)
         fetchLeaves()
     } catch (error) {
         console.log('Không từ chối được đơn nghỉ:', error)
