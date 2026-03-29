@@ -2,17 +2,27 @@
     <div>
         <TheHeader />
         <div class="container-fluid">
+            <a-button @click="showSidebar = true" class="d-lg-none mb-2">
+                <i class="fa-solid fa-bars"></i>
+            </a-button>
+
+            <a-drawer :visible="showSidebar" placement="left" width="260" @close="showSidebar = false" class="d-lg-none">
+                <SidebarAdmin />
+            </a-drawer>
+
             <div class="row">
-                <div class="col-3">
+                <div class="d-none d-lg-block col-lg-3">
                     <SidebarAdmin />
                 </div>
-                <div class="col-9">
 
-                    <h1 class="mb-3">Bảng điều khiển</h1>
+                <div class="col-12 col-lg-9">
+
+                    <h1 class="mb-3 mt-2 mt-lg-3">Bảng điều khiển</h1>
+
                     <div class="container-fluid">
-                        <div class="row">
-                            <div class="col-4">
-                                <div class="card" style="width: 18rem;">
+                        <div class="row g-3">
+                            <div class="col-12 col-md-6">
+                                <div class="card h-100">
                                     <div class="card-body">
                                         <div class="row">
                                             <div class="col-3">
@@ -27,8 +37,8 @@
                                 </div>
                             </div>
 
-                            <div class="col-4">
-                                <div class="card" style="width: 18rem;">
+                            <div class="col-12 col-md-6">
+                                <div class="card h-100">
                                     <div class="card-body">
                                         <div class="row">
                                             <div class="col-3">
@@ -36,63 +46,49 @@
                                             </div>
                                             <div class="col-9">
                                                 <p>Đơn nghỉ chờ duyệt</p>
-                                                <h2>5</h2>
+                                                <h2>{{ pendingLeaves }}</h2>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
+                        </div>
+                    </div>
 
-                            <div class="col-4">
-                                <div class="card" style="width: 18rem;">
-                                    <div class="card-body">
-                                        <div class="row">
-                                            <div class="col-3">
-                                                <i class="bi bi-person-circle fs-1"></i>
-                                            </div>
-                                            <div class="col-9">
-                                                <p>Dự án đang hoạt động</p>
-                                                <h2>9</h2>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
+                    <div class="container-fluid mt-4">
+                        <div class="row">
+                            <div class="d-flex flex-column flex-lg-row justify-content-between align-items-start align-items-lg-center gap-2">
+                                <h2 style="color: gray" class="mb-0">Nhân viên gần đây</h2>
+                                <a-button type="primary" @click="employeeManagement" class="d-block d-sm-inline-block">Xem tất cả nhân viên</a-button>
                             </div>
                         </div>
                     </div>
-                    <div class="row mt-3">
-                        <div class="col-10">
-                            <h2 style="color: gray">Nhân viên gần đây</h2>
-                        </div>
-                        <div class="col-2 mt-3">
-                            <a-button type="primary" @click="employeeManagement">Xem tất cả nhân viên</a-button>
-                        </div>
+
+                    <div class="table-responsive mt-4">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th scope="col">Họ tên</th>
+                                    <th scope="col">Vị trí</th>
+                                    <th class="d-none d-lg-table-cell" scope="col">Phòng ban</th>
+                                    <th class="d-none d-lg-table-cell" scope="col">Email</th>
+                                    <th scope="col">Trạng thái</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr v-for="(user) in users" :key="user.id">
+                                    <td>{{ user.name }}</td>
+                                    <td>{{ user.employee?.position }}</td>
+                                    <td class="d-none d-lg-table-cell">{{ user.employee?.department }}</td>
+                                    <td class="d-none d-lg-table-cell">{{ user.email }}</td>
+                                    <td>{{ user.employee?.status }}</td>
+                                </tr>
+                            </tbody>
+                        </table>
                     </div>
-                    <table class="table mt-5">
-                        <thead>
-                            <tr>
-                                <th scope="col">Họ tên</th>
-                                <th scope="col">Vị trí</th>
-                                <th scope="col">Phòng ban</th>
-                                <th scope="col">Email</th>
-                                <th scope="col">Trạng thái</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr v-for="(user) in users" :key="user.id">
-                                <td>{{ user.name }}</td>
-                                <td>{{ user.employee?.position }}</td>
-                                <td>{{ user.employee?.department }}</td>
-                                <td>{{ user.email }}</td>
-                                <td>{{ user.employee?.status }}</td>
-                            </tr>
-                        </tbody>
-                    </table>
                 </div>
             </div>
-
         </div>
-
     </div>
 </template>
 
@@ -106,6 +102,9 @@ import http from "../../services/http";
 
 const users = ref([])
 const totalUsers = ref(0)
+const showSidebar = ref(false)
+
+const pendingLeaves = ref(0)
 
 const fetchUsers = async () => {
     try {
@@ -113,6 +112,7 @@ const fetchUsers = async () => {
 
         totalUsers.value = response.data.total;
         users.value = response.data.users;
+        pendingLeaves.value = response.data.pending_leaves;
     }
     catch (error) {
         console.log(error);

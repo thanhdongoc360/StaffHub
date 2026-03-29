@@ -2,61 +2,68 @@
     <div>
         <TheHeader />
         <div class="container-fluid">
+            <a-button @click="showSidebar = true" class="d-lg-none mb-2">
+                <i class="fa-solid fa-bars"></i>
+            </a-button>
+
+            <a-drawer :visible="showSidebar" placement="left" width="260" @close="showSidebar = false" class="d-lg-none">
+                <SidebarAdmin />
+            </a-drawer>
+
             <div class="row">
-                <div class="col-3">
+                <div class="d-none d-lg-block col-lg-3">
                     <SidebarAdmin />
                 </div>
 
-                <div class="col-9">
-                    <div class="row">
-                        <div class="col-10">
-                            <h1 class="mt-3">Quản lý lương</h1>
-                        </div>
-
-                        <div class="col-2 mt-5">
-                            <a-button type="primary" @click="showModal = true">
-                                <i class="fa-solid fa-plus me-1"></i>Thêm lương
-                            </a-button>
+                <div class="col-12 col-lg-9">
+                    <div class="container-fluid">
+                        <div class="row">
+                            <div class="d-flex flex-column flex-lg-row justify-content-between align-items-start align-items-lg-center mt-3 gap-2">
+                                <h1 class="mb-0">Quản lý lương</h1>
+                                <a-button type="primary" @click="showModal = true" class="d-block d-sm-inline-block">
+                                    <i class="fa-solid fa-plus me-1"></i>Thêm lương
+                                </a-button>
+                            </div>
                         </div>
                     </div>
 
-
-                    <a-form>
-                        <a-select v-model:value="selectedMonth" placeholder="Chọn tháng" class="me-1">
+                    <a-form class="d-flex flex-column flex-sm-row gap-2 align-items-stretch align-items-sm-center mt-3">
+                        <a-select v-model:value="selectedMonth" placeholder="Chọn tháng" class="w-100" style="max-width: 220px;">
                             <a-select-option v-for="m in 12" :key="m" :value="m">
                                 Tháng {{ m }}
                             </a-select-option>
                         </a-select>
 
-                        <a-input v-model:value="selectedYear" placeholder="Nhập năm" style="width: 150px"
-                            class="me-3" />
+                        <a-input v-model:value="selectedYear" placeholder="Nhập năm" class="w-100" style="max-width: 220px;" />
 
-                        <a-button type="primary" @click="searchSalary">Tìm kiếm</a-button>
+                        <a-button type="primary" @click="searchSalary" class="d-block d-sm-inline-block">Tìm kiếm</a-button>
                     </a-form>
 
-                    <table class="table mt-5">
-                        <thead>
-                            <tr>
-                                <th scope="col">Tên nhân viên</th>
-                                <th scope="col">Tháng/Năm</th>
-                                <th scope="col">Lương cơ bản</th>
-                                <th scope="col">Thưởng</th>
-                                <th scope="col">Tổng</th>
-                                <th scope="col">Ghi chú</th>
-                            </tr>
-                        </thead>
+                    <div class="table-responsive mt-4">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th scope="col">Tên nhân viên</th>
+                                    <th scope="col">Tháng/Năm</th>
+                                    <th scope="col">Lương cơ bản</th>
+                                    <th class="d-none d-lg-table-cell" scope="col">Thưởng</th>
+                                    <th scope="col">Tổng</th>
+                                    <th class="d-none d-lg-table-cell" scope="col">Ghi chú</th>
+                                </tr>
+                            </thead>
 
-                        <tbody>
-                            <tr v-for="salary in salaries" :key="salary.id">
-                                <td>{{ salary.employee.user.name }}</td>
-                                <td>{{ salary.month }}/{{ salary.year }}</td>
-                                <td>{{ salary.base_salary }}</td>
-                                <td>{{ salary.bonus }}</td>
-                                <td>{{ salary.total }}</td>
-                                <td>{{ salary.note }}</td>
-                            </tr>
-                        </tbody>
-                    </table>
+                            <tbody>
+                                <tr v-for="salary in salaries" :key="salary.id">
+                                    <td>{{ salary.employee.user.name }}</td>
+                                    <td>{{ salary.month }}/{{ salary.year }}</td>
+                                    <td>{{ salary.base_salary }}</td>
+                                    <td class="d-none d-lg-table-cell">{{ salary.bonus }}</td>
+                                    <td>{{ salary.total }}</td>
+                                    <td class="d-none d-lg-table-cell">{{ salary.note }}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
         </div>
@@ -85,6 +92,7 @@ import { ref, onMounted } from 'vue'
 import http from "../../services/http";
 
 const salaries = ref([])
+const showSidebar = ref(false)
 
 const selectedMonth = ref(null)
 const selectedYear = ref(null)

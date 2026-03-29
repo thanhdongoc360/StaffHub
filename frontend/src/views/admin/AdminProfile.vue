@@ -2,17 +2,25 @@
     <div>
         <TheHeader />
         <div class="container-fluid">
+            <a-button @click="showSidebar = true" class="d-lg-none mb-2">
+                <i class="fa-solid fa-bars"></i>
+            </a-button>
+
+            <a-drawer :visible="showSidebar" placement="left" width="260" @close="showSidebar = false" class="d-lg-none">
+                <SidebarAdmin />
+            </a-drawer>
+
             <div class="row">
-                <div class="col-3">
+                <div class="d-none d-lg-block col-lg-3">
                     <SidebarAdmin />
                 </div>
 
-                <div class="col-9">
-                    <div class="row">
-                        <h1 class="mt-3">Hồ sơ cá nhân</h1>
+                <div class="col-12 col-lg-9">
+                    <div class="row mt-2 mt-lg-3">
+                        <h1 class="mb-3">Hồ sơ cá nhân</h1>
 
                         <a-card title="Thông tin cơ bản" class="mb-4">
-                            <a-form :label-col="{ span: 4 }" :wrapper-col="{ span: 14 }">
+                            <a-form layout="vertical">
                                 <a-form-item label="Họ và tên">
                                     <a-input v-model:value="profile.name" />
                                 </a-form-item>
@@ -26,7 +34,7 @@
                                 </a-form-item>
 
                                 <a-form-item>
-                                    <a-button type="primary" @click="updateProfile" >
+                                    <a-button type="primary" @click="updateProfile" class="d-block d-sm-inline-block">
                                         Cập nhật
                                     </a-button>
                                 </a-form-item>
@@ -35,7 +43,7 @@
                         </a-card>
 
                         <a-card title="Đổi mật khẩu">
-                            <a-form :label-col="{ span: 4 }" :wrapper-col="{ span: 14 }">
+                            <a-form layout="vertical">
                                 <a-form-item label="Mật khẩu hiện tại">
                                     <a-input-password v-model:value="passwordForm.current_password" />
                                 </a-form-item>
@@ -49,7 +57,7 @@
                                 </a-form-item>
 
                                 <a-form-item>
-                                    <a-button type="primary" @click="changePassword">
+                                    <a-button type="primary" @click="changePassword" class="d-block d-sm-inline-block">
                                         Đổi mật khẩu
                                     </a-button>
                                 </a-form-item>
@@ -71,6 +79,7 @@ import { ref, onMounted } from 'vue'
 import http from "../../services/http";
 import { message } from 'ant-design-vue'  
 
+const showSidebar = ref(false)
 const profile = ref({
     name: '',
     email: '',

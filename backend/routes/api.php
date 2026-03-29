@@ -42,7 +42,7 @@ Route::middleware('auth:sanctum')->group(function () {
     });
 
     Route::middleware('role:admin')->prefix('admin')->group(function () {
-        Route::get('/dashboard', [UserController::class, 'index']);
+        Route::get('/dashboard', [UserController::class, 'dashboard']);
         Route::get('/users', [UserController::class, 'index']);
 
         Route::get('/employees', [UserController::class, 'employeeList']);

@@ -25,7 +25,7 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::table('notification', function(Blueprint $table) {
+        Schema::table('notifications', function(Blueprint $table) {
             $table->dropForeign('notifications_user_id_foreign');
             $table->dropColumn(['user_id']);
         });

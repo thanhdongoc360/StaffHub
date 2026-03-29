@@ -2,22 +2,32 @@
     <div>
         <TheHeader />
         <div class="container-fluid">
+            <a-button @click="showSidebar = true" class="d-lg-none mb-2">
+                <i class="fa-solid fa-bars"></i>
+            </a-button>
+
+            <a-drawer :visible="showSidebar" placement="left" width="260" @close="showSidebar = false" class="d-lg-none">
+                <SidebarAdmin />
+            </a-drawer>
+
             <div class="row">
-                <div class="col-3">
+                <div class="d-none d-lg-block col-lg-3">
                     <SidebarAdmin />
                 </div>
-                <div class="col-9">
-                    <h1>Quản lý đơn nghỉ phép</h1>
 
-                    <table class="table mt-4">
+                <div class="col-12 col-lg-9">
+                    <h1 class="mt-2 mt-lg-3">Quản lý đơn nghỉ phép</h1>
+
+                    <div class="table-responsive mt-4">
+                        <table class="table">
                         <thead>
                             <tr>
                                 <th scope="col">Tên nhân viên</th>
                                 <th scope="col">Loại nghỉ</th>
-                                <th scope="col">Ngày bắt đầu</th>
-                                <th scope="col">Ngày kết thúc</th>
-                                <th scope="col">Lý do</th>
-                                <th scope="col">Trạng thái</th>
+                                <th class="d-none d-md-table-cell" scope="col">Ngày bắt đầu</th>
+                                <th class="d-none d-md-table-cell" scope="col">Ngày kết thúc</th>
+                                <th class="d-none d-lg-table-cell" scope="col">Lý do</th>
+                                <th class="d-none d-lg-table-cell" scope="col">Trạng thái</th>
                                 <th scope="col">Hành động</th>
                             </tr>
                         </thead>
@@ -26,10 +36,10 @@
                             <tr v-for="leave in leaves" :key="leave.id">
                                 <td>{{ leave.employee?.user?.name }}</td>
                                 <td>{{ leave.type }}</td>
-                                <td>{{ leave.start_date }}</td>
-                                <td>{{ leave.end_date }}</td>
-                                <td>{{ leave.reason }}</td>
-                                <td>{{ leave.status }}</td>
+                                <td class="d-none d-md-table-cell">{{ leave.start_date }}</td>
+                                <td class="d-none d-md-table-cell">{{ leave.end_date }}</td>
+                                <td class="d-none d-lg-table-cell">{{ leave.reason }}</td>
+                                <td class="d-none d-lg-table-cell">{{ leave.status }}</td>
                                 <td>
                                     <template v-if="leave.status === 'Chờ duyệt'">
                                         <a-button class="me-2" type="primary" @click="approve(leave.id)">
@@ -51,10 +61,11 @@
                                 </td>
                             </tr>
                             <tr v-if="leaves.length === 0">
-                                <td colspan="7" class="text-center text-muted">Chưa có đơn nghỉ phép nào</td>
+                                <td colspan="8" class="text-center text-muted">Chưa có đơn nghỉ phép nào</td>
                             </tr>
                         </tbody>
-                    </table>
+                        </table>
+                    </div>
                 </div>
             </div>
         </div>
@@ -69,6 +80,7 @@ import TheHeader from '../../components/TheHeader.vue';
 import SidebarAdmin from '../../components/SidebarAdmin.vue'
 
 const leaves = ref([])
+const showSidebar = ref(false)
 
 const fetchLeaves = async () => {
     try {
@@ -92,7 +104,7 @@ const approve = async (id) => {
 
 const reject = async (id) => {
     try {
-        await axios.http(`/admin/leaves/${id}/reject`)
+        await http.post(`/admin/leaves/${id}/reject`)
         fetchLeaves()
     } catch (error) {
         console.log('Không từ chối được đơn nghỉ:', error)

@@ -7,20 +7,21 @@ use App\Models\User;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use App\Models\Employee;
+use App\Models\LeaveRequest;
 
 class UserController extends Controller
 {
     public function index()
     {
         $users = User::with('employee')
-                    ->where('name', '!=', 'admin')
-                    ->get();
+            ->where('name', '!=', 'admin')
+            ->get();
 
         return response()->json([
             'total' => $users->count(),
             'users' => $users
-        ]);  
-    }  
+        ]);
+    }
 
     public function store(Request $request)
     {
@@ -56,8 +57,7 @@ class UserController extends Controller
             return response()->json([
                 'message' => 'Tạo nhân viên thành công'
             ], 201);
-        }
-        catch(\Exception $e) {
+        } catch (\Exception $e) {
             DB::rollback();
             return response()->json(['error' => $e->getMessage()], 500);
         }
@@ -71,7 +71,7 @@ class UserController extends Controller
         $user->email = $request->email;
         $user->save();
 
-        if($user->employee) {
+        if ($user->employee) {
             $user->employee->position = $request->position;
             $user->employee->department = $request->department;
             $user->employee->save();
@@ -104,5 +104,24 @@ class UserController extends Controller
         $employee = Employee::with('user')->get();
 
         return response()->json($employee);
+    }
+
+    public function dashboard()
+    {
+        $totalUsers = User::where('role', 'employee')->count();
+
+        $recentUsers = User::with('employee')
+            ->where('role', 'employee')
+            ->latest()
+            ->take(5)
+            ->get();
+
+        $pendingLeaves = LeaveRequest::where('status', 'Chờ duyệt')->count();
+
+        return response()->json([
+            'total' => $totalUsers,
+            'users' => $recentUsers,
+            'pending_leaves' => $pendingLeaves
+        ]);
     }
 }
