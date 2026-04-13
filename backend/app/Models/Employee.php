@@ -13,7 +13,7 @@ class Employee extends Model
         'position',
         'department',
         'phone',
-        'status'
+        'status',
     ];
 
     public function user()
@@ -21,7 +21,7 @@ class Employee extends Model
         return $this->belongsTo(User::class);
     }
 
-    public function leaveRequest() 
+    public function leaveRequest()
     {
         return $this->hasMany(LeaveRequest::class);
     }
@@ -29,5 +29,10 @@ class Employee extends Model
     public function salaries()
     {
         return $this->hasMany(Salary::class);
+    }
+
+    public function performanceReviews()
+    {
+        return $this->hasMany(PerformanceReview::class);
     }
 }

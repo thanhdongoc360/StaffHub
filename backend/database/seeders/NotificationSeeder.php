@@ -16,17 +16,24 @@ class NotificationSeeder extends Seeder
     public function run()
     {
         DB::table('notifications')->insert([
-            'user_id' => 7,
-            'title' => 'Họp thường ngày',
+            'user_id' => 8,
+            'title' => 'Họp team marketing',
             'content' => 'Họp theo lịch trình hằng ngày',
-            'date' => '2026-03-05',
+            'date' => '2026-04-05',
             'is_read' => false
         ]);
         DB::table('notifications')->insert([
-            'user_id' => 7,
-            'title' => 'Họp thường ngày',
+            'user_id' => 8,
+            'title' => 'Họp team marketing',
             'content' => 'Họp theo lịch trình hằng ngày',
-            'date' => '2026-03-06',
+            'date' => '2026-04-06',
+            'is_read' => false
+        ]);
+        DB::table('notifications')->insert([
+            'user_id' => 22,
+            'title' => 'Họp team marketing',
+            'content' => 'Họp theo lịch trình hằng ngày',
+            'date' => '2026-04-06',
             'is_read' => false
         ]);
     }

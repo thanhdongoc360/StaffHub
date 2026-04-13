@@ -8,6 +8,8 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 use App\Models\Employee;
+use App\Models\Notification;
+use App\Models\Role;
 
 class User extends Authenticatable
 {
@@ -53,4 +55,31 @@ class User extends Authenticatable
     {
         return $this->hasMany(Notification::class);
     }
+
+    public function roleRelation()
+    {
+        return $this->belongsTo(Role::class, 'role_id');
+    }
+
+    public function getRoleAttribute($value)
+    {
+        return $this->roleRelation
+            ? $this->roleRelation->name
+            : $value;
+    }
+
+    public function performanceReviews()
+    {
+        return $this->hasMany(PerformanceReview::class, 'reviewer_id');
+    }
+
+    // public function isAdmin()
+    // {
+    //     return $this->roleRelation?->name === 'admin';
+    // }
+
+    // public function isEmployee()
+    // {
+    //     return $this->roleRelation?->name === 'employee';
+    // }
 }

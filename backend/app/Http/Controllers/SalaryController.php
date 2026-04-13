@@ -67,4 +67,34 @@ class SalaryController extends Controller
 
         return response()->json($salary->load('employee.user'));
     }
+
+    public function managementIndex(Request $request)
+    {
+        $user = $request->user();
+
+        if (!$user->employee) {
+            return response()->json([
+                'message' => 'Không tìm thấy thông tin nhân viên'
+            ], 404);
+        }
+
+        $department = $user->employee->department;
+
+        $query = Salary::with('employee.user')
+            ->whereHas('employee', function ($q) use ($department) {
+                $q->where('department', $department);
+            })
+            ->orderBy('year', 'desc')
+            ->orderBy('month', 'desc');
+
+        if ($request->month) {
+            $query->where('month', $request->month);
+        }
+
+        if ($request->year) {
+            $query->where('year', $request->year);
+        }
+
+        return response()->json($query->get());
+    }
 }

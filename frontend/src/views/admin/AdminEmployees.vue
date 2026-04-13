@@ -192,7 +192,8 @@ const resetForm = () => {
 };
 const rules = {
     name: [
-        { required: true, message: 'Nhập họ tên', trigger: 'blur' },
+        { required: true, message: 'Nhập họ tên', trigger: 'blur' }, 
+        // trigger: 'blur' : không validate ngay khi gõ mà chỉ validate khi click ra ngoài
     ],
     email: [
         { required: true, message: 'Email', trigger: 'blur' },

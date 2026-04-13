@@ -50,15 +50,24 @@ async function handleLogin() {
     localStorage.setItem('token', token)
     localStorage.setItem('user', JSON.stringify(user))
 
-    if (response.data.role == 'admin') {
-      router.push('/admin/dashboard')
-    } 
-    else {
-      router.push('/employee/dashboard')
+    const role = response.data.role
+
+    switch (role) {
+      case 'admin':
+        router.push('/admin/dashboard')
+        break
+
+      case 'employee':
+        router.push('/employee/dashboard')
+        break
+      
+      case 'management':
+        router.push('/management/dashboard')
+        break
     }
 
   } catch (error) {
     console.log(error.response.data)
-  }   
+  }
 }
 </script>

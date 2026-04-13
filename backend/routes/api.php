@@ -9,6 +9,12 @@ use App\Http\Controllers\SalaryController;
 use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\EmployeeController;
 use App\Http\Controllers\AdminProfileController;
+use App\Http\Controllers\Management\ManagementEmployeeController;
+use App\Http\Controllers\Management\ManagementProfileController;
+
+use Maatwebsite\Excel\Facades\Excel;
+use App\Exports\ManagementEmployeesExport;
+use App\Http\Controllers\PerformanceController;
 
 /*
 |--------------------------------------------------------------------------
@@ -37,7 +43,7 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('/my-salaries', [SalaryController::class, 'mySalaries']);
 
         Route::get('/employee/profile', [EmployeeController::class, 'profile']);
-        Route::put('/employee/profile', [EmployeeController::class, 'updateProfile']);  
+        Route::put('/employee/profile', [EmployeeController::class, 'updateProfile']);
         Route::put('/employee/change-password', [EmployeeController::class, 'changePassword']);
     });
 
@@ -58,9 +64,43 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('/salaries', [SalaryController::class, 'adminIndex']);
         Route::post('/salaries', [SalaryController::class, 'store']);
 
-        Route::get('/profile', [AdminProfileController::class, 'profile']);  
+        Route::get('/profile', [AdminProfileController::class, 'profile']);
         Route::put('/profile', [AdminProfileController::class, 'updateProfile']);
         Route::put('/change-password', [AdminProfileController::class, 'changePassword']);
+    });
+
+    Route::middleware('role:management')->prefix('management')->group(function () {
+        Route::get('/employees', [ManagementEmployeeController::class, 'index']);
+        Route::get('employees/{id}', [ManagementEmployeeController::class, 'show']);
+        Route::get('employees-export', function (Request $request) {
+            return Excel::download(
+                new ManagementEmployeesExport(
+                    $request->search,
+                    $request->status,
+                    $request->sort_by,
+                    $request->sort_order
+                ),
+                'employee.xlsx'
+            );
+        });
+
+        Route::get('/profile', [ManagementProfileController::class, 'profile']);
+        Route::put('/profile', [ManagementProfileController::class, 'updateProfile']);
+        Route::put('/change-password', [ManagementProfileController::class, 'changePassword']);
+
+        Route::get('/leaves', [LeaveController::class, 'managementIndex']);
+        Route::post('/leaves/{id}/approve', [LeaveController::class, 'managementApprove']);
+        Route::post('/leaves/{id}/reject', [LeaveController::class, 'managementReject']);
+
+        Route::get('/salaries', [SalaryController::class, 'managementIndex']);
+
+        Route::get('/dashboard', [ManagementEmployeeController::class, 'dashboard']);
+
+        Route::get('/performance', [PerformanceController::class, 'index']);
+        Route::get('/performance/{employeeId}', [PerformanceController::class, 'show']);
+        Route::post('/performance', [PerformanceController::class, 'store']);
+        Route::put('/performance/{id}/confirm', [PerformanceController::class, 'confirm']);
+        Route::get('performance/history/{employeeId}', [PerformanceController::class, 'history']);
     });
 });
 

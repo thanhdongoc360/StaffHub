@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use App\Models\Employee;
 use App\Models\LeaveRequest;
+use App\Models\Role;
 
 class UserController extends Controller
 {
@@ -37,11 +38,13 @@ class UserController extends Controller
         DB::beginTransaction();
 
         try {
+            $role = Role::where('name', 'employee')->first();
+
             $user = User::create([
                 'name' => $request->name,
                 'email' => $request->email,
                 'password' => Hash::make($request->password),
-                'role' => 'employee'
+                'role_id' => $role->id
             ]);
 
             Employee::create([
@@ -108,10 +111,14 @@ class UserController extends Controller
 
     public function dashboard()
     {
-        $totalUsers = User::where('role', 'employee')->count();
+        $totalUsers = User::whereHas('roleRelation', function ($q) {
+            $q->where('name', 'employee');
+        })->count();
 
-        $recentUsers = User::with('employee')
-            ->where('role', 'employee')
+        $recentUsers = User::with(['employee', 'roleRelation'])
+            ->whereHas('roleRelation', function ($q) {
+                $q->where('name', 'employee');
+            })
             ->latest()
             ->take(5)
             ->get();
