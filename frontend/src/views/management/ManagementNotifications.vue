@@ -2,8 +2,8 @@
     <div>
         <TheHeader />
 
-        <div class="container-fluid">
-            <a-button @click="showSidebar = true" class="d-lg-none mb-2">
+        <div class="container-fluid mt-3">
+            <a-button @click="showSidebar = true" class="d-lg-none mb-3">
                 <i class="fa-solid fa-bars"></i>
             </a-button>
 
@@ -24,12 +24,13 @@
 
                         <div class="d-flex flex-column flex-sm-row gap-2">
                             <a-button
+                                class="d-block d-sm-inline-block"
                                 style="background-color: yellow; border-color: yellow;"
                                 @click="filterType = 'unread'">
                                 Chưa đọc
                             </a-button>
 
-                            <a-button @click="markAllAsRead">
+                            <a-button class="d-block d-sm-inline-block" @click="markAllAsRead">
                                 <i class="fa-solid fa-check-double me-1"></i>
                                 Đánh dấu tất cả đã đọc
                             </a-button>
@@ -45,13 +46,13 @@
                                     <th class="d-none d-lg-table-cell">Nội dung</th>
                                     <th>Thời gian</th>
                                     <th>Trạng thái</th>
-                                    <th>Hành động</th>
+                                    <th class="d-none d-lg-table-cell">Hành động</th>
                                 </tr>
                             </thead>
 
                             <tbody>
                                 <tr v-for="noti in filteredNotifications" :key="noti.id">
-                                    <td>{{ noti.user?.name }}</td>
+                                    <td class="d-none d-md-table-cell">{{ noti.user?.name }}</td>
                                     <td>{{ noti.title }}</td>
                                     <td class="d-none d-lg-table-cell">{{ noti.content }}</td>
                                     <td>{{ formatDate(noti.created_at) }}</td>
@@ -69,7 +70,7 @@
                                 </tr>
 
                                 <tr v-if="filteredNotifications.length === 0">
-                                    <td colspan="6" class="text-center">
+                                    <td colspan="6" class="text-center text-muted d-none d-lg-table-cell">
                                         Không có thông báo
                                     </td>
                                 </tr>

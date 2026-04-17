@@ -18,31 +18,33 @@
                 </div>
 
                 <div class="col-12 col-lg-9">
-                    <h1 class="mb-4">Hồ sơ của tôi</h1>
+                    <div class="d-flex flex-column flex-lg-row justify-content-between align-items-start align-items-lg-center mt-3 gap-2">
+                        <h1 class="mb-0">Hồ sơ của tôi</h1>
+                    </div>
 
                     <!-- Thông tin -->
-                    <div class="card p-4 mb-4">
+                    <div class="card profile-card p-3 p-lg-4 mb-4 mt-3">
                         <h2 class="text-secondary mb-3">Thông tin cơ bản</h2>
 
                         <a-form layout="vertical">
                             <a-form-item label="Họ và tên">
-                                <a-input v-model:value="profile.name" disabled />
+                                <a-input :value="profile.name" disabled />
                             </a-form-item>
 
                             <a-form-item label="Email">
-                                <a-input v-model:value="profile.email" />
+                                <a-input :value="profile.email" @update:value="profile.email = $event" />
                             </a-form-item>
 
                             <a-form-item label="Số điện thoại">
-                                <a-input v-model:value="profile.phone" />
+                                <a-input :value="profile.phone" @update:value="profile.phone = $event" />
                             </a-form-item>
 
                             <a-form-item label="Vị trí">
-                                <a-input v-model:value="profile.position" disabled />
+                                <a-input :value="profile.position" disabled />
                             </a-form-item>
 
                             <a-form-item label="Phòng ban">
-                                <a-input v-model:value="profile.department" disabled />
+                                <a-input :value="profile.department" disabled />
                             </a-form-item>
 
                             <a-form-item>
@@ -54,20 +56,20 @@
                     </div>
 
                     <!-- Đổi mật khẩu -->
-                    <div class="card p-4">
+                    <div class="card profile-card p-3 p-lg-4">
                         <h2 class="text-secondary mb-3">Đổi mật khẩu</h2>
 
                         <a-form layout="vertical">
                             <a-form-item label="Mật khẩu hiện tại">
-                                <a-input-password v-model:value="passwordForm.current_password" />
+                                <a-input-password :value="passwordForm.current_password" @update:value="passwordForm.current_password = $event" />
                             </a-form-item>
 
                             <a-form-item label="Mật khẩu mới">
-                                <a-input-password v-model:value="passwordForm.new_password" />
+                                <a-input-password :value="passwordForm.new_password" @update:value="passwordForm.new_password = $event" />
                             </a-form-item>
 
                             <a-form-item label="Xác nhận mật khẩu">
-                                <a-input-password v-model:value="passwordForm.confirm_password" />
+                                <a-input-password :value="passwordForm.confirm_password" @update:value="passwordForm.confirm_password = $event" />
                             </a-form-item>
 
                             <a-form-item>
@@ -145,7 +147,7 @@ const handleChangePassword = async () => {
 </script>
 
 <style scoped>
-.card {
+.profile-card {
     background-color: #f8f9fa;
     border-radius: 12px;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);

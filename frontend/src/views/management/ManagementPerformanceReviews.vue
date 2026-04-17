@@ -2,8 +2,8 @@
     <div>
         <TheHeader />
 
-        <div class="container-fluid">
-            <a-button @click="showSidebar = true" class="d-lg-none mb-2">
+        <div class="container-fluid mt-3">
+            <a-button @click="showSidebar = true" class="d-lg-none mb-3">
                 <i class="fa-solid fa-bars"></i>
             </a-button>
 
@@ -18,28 +18,29 @@
                 </div>
 
                 <div class="col-12 col-lg-9">
-                    <div class="d-flex justify-content-between align-items-center mt-3 flex-wrap gap-3">
-                        <h1>Hiệu suất phòng ban</h1>
+                    <div class="d-flex flex-column flex-lg-row justify-content-between align-items-start align-items-lg-center mt-3 gap-2">
+                        <h1 class="mb-0">Hiệu suất phòng ban</h1>
                     </div>
 
-                    <div class="d-flex flex-wrap gap-3 mt-3">
-                        <a-input placeholder="Tìm tên / mã NV" v-model:value="search" @input="fetchData"
-                            style="width: 250px" />
+                    <div class="mt-3 filter-panel">
+                        <div class="d-flex flex-column flex-md-row flex-wrap gap-3">
+                            <a-input class="filter-item" placeholder="Tìm tên / mã NV" v-model:value="search" @input="fetchData" />
 
-                        <a-select v-model:value="month" style="width: 120px" @change="fetchData">
-                            <a-select-option v-for="m in 12" :key="m" :value="m">
-                                Tháng {{ m }}
-                            </a-select-option>
-                        </a-select>
+                                <a-select v-model:value="month" class="filter-item-sm" @change="fetchData">
+                                <a-select-option v-for="m in 12" :key="m" :value="m">
+                                    Tháng {{ m }}
+                                </a-select-option>
+                            </a-select>
 
-                        <a-input type="number" v-model:value="year" style="width: 120px" @change="fetchData" />
+                                <a-input type="number" v-model:value="year" class="filter-item-sm" @change="fetchData" />
 
-                        <a-button type="primary" @click="fetchData">Tìm kiếm</a-button>
+                            <a-button type="primary" @click="fetchData" class="d-block d-sm-inline-block">Tìm kiếm</a-button>
+                        </div>
                     </div>
 
-                    <div class="row mt-4">
-                        <div class="col-md-3" v-for="card in kpiCards" :key="card.label">
-                            <div class="p-3 border rounded text-center">
+                    <div class="row mt-4 g-3">
+                        <div class="col-12 col-sm-6 col-xl-3" v-for="card in kpiCards" :key="card.label">
+                            <div class="p-3 border rounded text-center h-100">
                                 <h5>{{ card.label }}</h5>
                                 <h3>{{ card.value }}</h3>
                             </div>
@@ -51,10 +52,10 @@
                             <thead>
                                 <tr>
                                     <th>Mã nhân viên</th>
-                                    <th>Họ tên</th>
-                                    <th>Chức vụ</th>
+                                    <th class="d-none d-lg-table-cell">Họ tên</th>
+                                    <th class="d-none d-lg-table-cell">Chức vụ</th>
                                     <th>Trạng thái</th>
-                                    <th>Điểm</th>
+                                    <th class="d-none d-lg-table-cell">Điểm</th>
                                     <th>Xếp loại</th>
                                     <th>Hành động</th>
                                 </tr>
@@ -62,22 +63,28 @@
 
                             <tbody>
                                 <tr v-for="item in list" :key="item.id">
-                                    <td>{{ item.code }}</td>
-                                    <td>{{ item.name }}</td>
-                                    <td>{{ item.position }}</td>
+                                    <td class="text-nowrap">{{ item.code }}</td>
+                                    <td class="d-none d-lg-table-cell">{{ item.name }}</td>
+                                    <td class="d-none d-md-table-cell">{{ item.position }}</td>
                                     <td>
                                         <span :class="statusClass(item.status)">
                                             {{ statusText(item.status) }}
                                         </span>
                                     </td>
 
-                                    <td>{{ item.total_score ?? '-' }}</td>
+                                    <td class="d-none d-lg-table-cell">{{ item.total_score ?? '-' }}</td>
                                     <td>{{ item.rank ?? '-' }}</td>
 
                                     <td>
                                         <a-button size="small" @click="openDetail(item)">
                                             Xem / Nhập
                                         </a-button>
+                                    </td>
+                                </tr>
+
+                                <tr v-if="list.length === 0">
+                                    <td colspan="7" class="text-center text-muted">
+                                        Không có dữ liệu
                                     </td>
                                 </tr>
                             </tbody>
@@ -124,23 +131,16 @@
                     <b>Rank:</b> {{ detail.review.rank }}
                 </div>
 
-                <div style="
-                    display: flex;
-                    justify-content: flex-end;
-                    gap: 10px;
-                    margin-top: 20px;
-                    border-top: 1px solid #eee;
-                    padding-top: 15px;
-                ">
-                    <a-button @click="showModal = false">
+                <div class="d-flex flex-column flex-sm-row justify-content-end gap-2 mt-4 pt-3 border-top">
+                    <a-button class="d-block d-sm-inline-block" @click="showModal = false">
                         Đóng
                     </a-button>
 
-                    <a-button v-if="detail.review.status === 'draft'" type="primary" @click="submitReview">
+                    <a-button v-if="detail.review.status === 'draft'" type="primary" class="d-block d-sm-inline-block" @click="submitReview">
                         Submit
                     </a-button>
 
-                    <a-button v-if="detail.review.status === 'submitted'" type="primary" @click="confirmReview">
+                    <a-button v-if="detail.review.status === 'submitted'" type="primary" class="d-block d-sm-inline-block" @click="confirmReview">
                         Confirm
                     </a-button>
                 </div>

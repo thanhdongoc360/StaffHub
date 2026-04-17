@@ -2,8 +2,8 @@
     <div>
         <TheHeader />
 
-        <div class="container-fluid">
-            <a-button @click="showSidebar = true" class="d-lg-none mb-2">
+        <div class="container-fluid mt-3">
+            <a-button @click="showSidebar = true" class="d-lg-none mb-3">
                 <i class="fa-solid fa-bars"></i>
             </a-button>
 
@@ -23,14 +23,18 @@
                 </div>
 
                 <div class="col-12 col-lg-9">
-                    <h1 class="mt-3">Quản lý lương phòng ban</h1>
+                    <div class="d-flex flex-column flex-lg-row justify-content-between align-items-start align-items-lg-center mt-3 gap-2">
+                        <h1 class="mb-0">Quản lý lương phòng ban</h1>
+                    </div>
 
                     <!-- FILTER -->
-                    <a-form class="d-flex flex-column flex-sm-row gap-2 align-items-stretch align-items-sm-center">
+                    <a-form class="d-flex flex-column flex-sm-row flex-wrap gap-2 align-items-stretch align-items-sm-center mt-3">
                         <a-select
-                            v-model:value="selectedMonth"
+                            :value="selectedMonth"
+                            @update:value="selectedMonth = $event"
                             placeholder="Chọn tháng"
-                            style="max-width: 200px"
+                            class="w-100"
+                            style="max-width: 220px"
                         >
                             <a-select-option v-for="m in 12" :key="m" :value="m">
                                 Tháng {{ m }}
@@ -38,12 +42,14 @@
                         </a-select>
 
                         <a-input
-                            v-model:value="selectedYear"
+                            :value="selectedYear"
+                            @update:value="selectedYear = $event"
                             placeholder="Nhập năm"
-                            style="max-width: 200px"
+                            class="w-100"
+                            style="max-width: 220px"
                         />
 
-                        <a-button type="primary" @click="searchSalary">
+                        <a-button type="primary" @click="searchSalary" class="d-block d-sm-inline-block">
                             Tìm kiếm
                         </a-button>
                     </a-form>
@@ -56,7 +62,7 @@
                                     <th>Nhân viên</th>
                                     <th>Tháng/Năm</th>
                                     <th>Lương cơ bản</th>
-                                    <th>Thưởng</th>
+                                    <th class="d-none d-lg-table-cell">Thưởng</th>
                                     <th>Tổng</th>
                                     <th class="d-none d-lg-table-cell">Ghi chú</th>
                                 </tr>
@@ -67,7 +73,7 @@
                                     <td>{{ salary.employee?.user?.name }}</td>
                                     <td>{{ salary.month }}/{{ salary.year }}</td>
                                     <td>{{ salary.base_salary }}</td>
-                                    <td>{{ salary.bonus }}</td>
+                                    <td class="d-none d-lg-table-cell">{{ salary.bonus }}</td>
                                     <td>{{ salary.total }}</td>
                                     <td class="d-none d-lg-table-cell">
                                         {{ salary.note }}
@@ -75,7 +81,7 @@
                                 </tr>
 
                                 <tr v-if="salaries.length === 0">
-                                    <td colspan="6" class="text-center">
+                                    <td colspan="6" class="text-center text-muted d-none d-lg-table-cell">
                                         Không có dữ liệu
                                     </td>
                                 </tr>

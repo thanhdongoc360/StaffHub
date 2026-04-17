@@ -2,8 +2,8 @@
     <div>
         <TheHeader />
 
-        <div class="container-fluid">
-            <a-button @click="showSidebar = true" class="d-lg-none mb-2">
+        <div class="container-fluid mt-3">
+            <a-button @click="showSidebar = true" class="d-lg-none mb-3">
                 <i class="fa-solid fa-bars"></i>
             </a-button>
 
@@ -18,26 +18,24 @@
                 </div>
 
                 <div class="col-12 col-lg-9">
-                    <div class="row">
-                        <div class="col-8">
-                            <h1 class="mt-3">Danh sách bảng lương</h1>
-                        </div>
+                    <div
+                        class="d-flex flex-column flex-lg-row justify-content-between align-items-start align-items-lg-center mt-3 gap-2">
+                        <h1 class="mb-0">Danh sách bảng lương</h1>
 
-                        <div class="col-4 mt-3">
-                            <button class="btn btn-primary" @click="exportExcel">
+                        <div class="d-flex flex-column flex-sm-row gap-2 w-100 w-lg-auto">
+                            <button class="btn btn-primary d-block d-sm-inline-block" @click="exportExcel">
                                 Xuất Excel
                             </button>
 
-                            <button class="btn btn-success ms-1" @click="createSalary">
+                            <button class="btn btn-success d-block d-sm-inline-block" @click="createSalary">
                                 Tạo bảng lương tháng
                             </button>
                         </div>
                     </div>
 
-
                     <!-- Filter -->
-                    <div class="container-fluid mt-3">
-                        <div class="d-flex flex-column flex-sm-row gap-2 align-items-stretch align-items-sm-center">
+                    <div class="mt-3">
+                        <div class="d-flex flex-column flex-sm-row flex-wrap gap-2 align-items-stretch align-items-sm-center">
 
                             <input v-model="search" placeholder="Tìm kiếm theo tên" class="form-control w-100"
                                 style="max-width: 220px;" />
@@ -71,42 +69,41 @@
 
 
                     <!-- Action buttons -->
-                    <div class="container-fluid mt-3">
-                        <div class="d-flex gap-2 flex-wrap">
-                            <button class="btn btn-success" @click="calculate">
+                    <div class="mt-3">
+                        <div class="d-flex flex-column flex-sm-row gap-2 flex-wrap">
+                            <button class="btn btn-success d-block d-sm-inline-block" @click="calculate">
                                 Tính lương toàn bộ
                             </button>
 
-                            <button class="btn btn-warning" @click="approve">
+                            <button class="btn btn-warning d-block d-sm-inline-block" @click="approve">
                                 Duyệt toàn bộ
                             </button>
 
-                            <button class="btn btn-dark" @click="publish">
+                            <button class="btn btn-dark d-block d-sm-inline-block" @click="publish">
                                 Công bố toàn bộ
                             </button>
                         </div>
                     </div>
 
                     <!-- Table -->
-                    <div class="container-fluid mt-4">
-                        <div class="table-responsive">
-                            <table class="table table-hover align-middle">
+                    <div class="table-responsive mt-4">
+                        <table class="table table-hover align-middle">
                                 <thead>
                                     <tr>
                                         <th>Nhân viên</th>
                                         <th>Tổng lương</th>
-                                        <th>Tháng/Năm</th>
+                                        <th class="d-none d-md-table-cell">Tháng/Năm</th>
                                         <th>Trạng thái</th>
-                                        <th>Hành động</th>
+                                        <th class="d-none d-lg-table-cell">Hành động</th>
                                         <th>Thực hiện</th>
                                     </tr>
                                 </thead>
 
                                 <tbody>
                                     <tr v-for="s in salaries" :key="s.id">
-                                        <td>{{ s.user_name }}</td>
+                                        <td class="text-nowrap">{{ s.user_name }}</td>
                                         <td>{{ s.total }}</td>
-                                        <td>{{ s.month }} / {{ s.year }}</td>
+                                        <td class="d-none d-md-table-cell">{{ s.month }} / {{ s.year }}</td>
                                         <td>
                                             <span v-if="s.status === 'draft'" class="badge bg-secondary">
                                                 Nháp
@@ -125,8 +122,8 @@
                                             </span>
                                         </td>
 
-                                        <td>
-                                            <a-space>
+                                        <td class="d-none d-lg-table-cell">
+                                            <div class="d-flex flex-column flex-xl-row gap-2">
                                                 <button class="btn btn-success btn-sm" @click="calculateOne(s.id)"
                                                     :disabled="s.status !== 'draft'">
                                                     Tính
@@ -141,7 +138,7 @@
                                                     :disabled="s.status !== 'approved'">
                                                     Công bố
                                                 </button>
-                                            </a-space>
+                                            </div>
                                         </td>
 
                                         <td>
@@ -158,9 +155,14 @@
                                             </a-space>
                                         </td>
                                     </tr>
+
+                                    <tr v-if="salaries.length === 0">
+                                        <td colspan="6" class="text-center text-muted">
+                                            Không có dữ liệu lương
+                                        </td>
+                                    </tr>
                                 </tbody>
-                            </table>
-                        </div>
+                        </table>
                     </div>
 
                 </div>
@@ -395,3 +397,10 @@ onMounted(() => {
 })
 
 </script>
+
+<style scoped>
+.table td,
+.table th {
+    vertical-align: middle;
+}
+</style>

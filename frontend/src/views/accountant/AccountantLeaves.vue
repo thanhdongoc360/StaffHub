@@ -1,8 +1,8 @@
 <template>
     <div>
         <TheHeader />
-        <div class="container-fluid">
-            <a-button @click="showSidebar = true" class="d-lg-none mb-2">
+        <div class="container-fluid mt-3">
+            <a-button @click="showSidebar = true" class="d-lg-none mb-3">
                 <i class="fa-solid fa-bars"></i>
             </a-button>
 
@@ -16,13 +16,11 @@
                 </div>
 
                 <div class="col-12 col-lg-9">
-                    <div class="container-fluid">
-                        <div class="row">
-                            <div class="d-flex flex-column flex-lg-row justify-content-between align-items-start align-items-lg-center mt-3 gap-2">
-                                <h1>Đơn nghỉ phép của tôi</h1>
-                                <a-button type="primary" @click="showModalLeave" class="d-block d-sm-inline-block">Tạo đơn nghỉ phép</a-button>
-                            </div>
-                        </div>
+                    <div class="d-flex flex-column flex-lg-row justify-content-between align-items-start align-items-lg-center mt-3 gap-2">
+                        <h1 class="mb-0">Đơn nghỉ phép của tôi</h1>
+                        <a-button type="primary" @click="showModalLeave" class="d-block d-sm-inline-block">
+                            Tạo đơn nghỉ phép
+                        </a-button>
                     </div>
 
                     <div class="table-responsive mt-4">
@@ -30,8 +28,8 @@
                             <thead>
                                 <tr>
                                     <th scope="col">Ngày bắt đầu</th>
-                                    <th scope="col">Ngày kết thúc</th>
-                                    <th scope="col">Số ngày</th>
+                                    <th class="d-none d-md-table-cell" scope="col">Ngày kết thúc</th>
+                                    <th class="d-none d-lg-table-cell" scope="col">Số ngày</th>
                                     <th scope="col">Loại nghỉ</th>
                                     <th class="d-none d-lg-table-cell" scope="col">Lý do</th>
                                     <th scope="col">Trạng thái</th>
@@ -41,14 +39,22 @@
                             <tbody>
                                 <tr v-for="leave in leaves" :key="leave.id">
                                     <td>{{ leave.start_date }}</td>
-                                    <td>{{ leave.end_date }}</td>
-                                    <td>
+                                    <td class="d-none d-md-table-cell">{{ leave.end_date }}</td>
+                                    <td class="d-none d-lg-table-cell">
                                         {{ Math.ceil((new Date(leave.end_date) - new Date(leave.start_date)) / (1000 * 60 * 60 * 24)) + 1 }}
                                     </td>
                                     <td>{{ leave.type }}</td>
                                     <td class="d-none d-lg-table-cell">{{ leave.reason }}</td>
-                                    <td>{{ leave.status }}</td>
+                                    <td>
+                                        <span :class="statusClass(leave.status)">{{ leave.status }}</span>
+                                    </td>
                                     <td class="d-none d-lg-table-cell">{{ leave.created_at }}</td>
+                                </tr>
+
+                                <tr v-if="leaves.length === 0">
+                                    <td colspan="7" class="text-center text-muted">
+                                        Không có đơn nghỉ phép
+                                    </td>
                                 </tr>
                             </tbody>
                         </table>
@@ -57,10 +63,12 @@
             </div>
         </div>
 
-        <a-modal v-model:open="isLeaveModalOpen" ok-text="Lưu" cancel-text="Đóng" @ok="createLeave" title="Tạo đơn nghỉ phép">
+        <a-modal v-model:open="isLeaveModalOpen" ok-text="Lưu" cancel-text="Đóng" @ok="createLeave"
+            title="Tạo đơn nghỉ phép">
             <a-form layout="vertical">
                 <a-form-item label="Khoảng ngày">
-                    <a-range-picker v-model:value="dateRange" :placeholder="['Ngày bắt đầu', 'Ngày kết thúc']" />
+                    <a-range-picker v-model:value="dateRange" :placeholder="['Ngày bắt đầu', 'Ngày kết thúc']"
+                        class="w-100" />
                 </a-form-item>
 
                 <a-form-item label="" name="status">
@@ -97,6 +105,16 @@ const leaves = ref([])
 
 const showModalLeave = () => {
     isLeaveModalOpen.value = true;
+}
+
+const statusClass = (status) => {
+    const value = (status || '').toLowerCase()
+
+    if (value.includes('đã duyệt')) return 'status-approved'
+    if (value.includes('từ chối')) return 'status-rejected'
+    if (value.includes('chờ duyệt')) return 'status-pending'
+
+    return 'status-default'
 }
 
 const fetchLeaves = async () => {
@@ -139,3 +157,30 @@ const createLeave = async () => {
 }
 
 </script>
+
+<style scoped>
+.table td,
+.table th {
+    vertical-align: middle;
+}
+
+.status-approved {
+    color: #198754;
+    font-weight: 600;
+}
+
+.status-rejected {
+    color: #dc3545;
+    font-weight: 600;
+}
+
+.status-pending {
+    color: #fd7e14;
+    font-weight: 600;
+}
+
+.status-default {
+    color: #6c757d;
+    font-weight: 600;
+}
+</style>

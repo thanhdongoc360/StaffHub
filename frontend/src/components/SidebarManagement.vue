@@ -45,12 +45,6 @@
                         <i class="fa-solid fa-bell me-2"></i>Thông báo
                     </router-link>
                 </li>
-
-                <li>
-                    <router-link to="/management/profile" class="nav-link text-black">
-                        <i class="fa-solid fa-bell me-2"></i>Hồ sơ
-                    </router-link>
-                </li>
             </ul>
 
             <hr>
