@@ -1,8 +1,9 @@
 <template>
     <div>
         <TheHeader />
-        <div class="container-fluid">
-            <a-button @click="showSidebar = true" class="d-lg-none mb-2">
+
+        <div class="container-fluid mt-3">
+            <a-button @click="showSidebar = true" class="d-lg-none mb-3">
                 <i class="fa-solid fa-bars"></i>
             </a-button>
 
@@ -18,33 +19,30 @@
             </div>
 
             <div class="col-12 col-lg-9">
-                <div class="d-flex justify-content-between align-items-center mt-3 flex-wrap gap-3">
+                <div class="d-flex flex-column flex-lg-row justify-content-between align-items-start align-items-lg-center mt-3 gap-2">
                     <h1 class="mb-0">
                         Nhân viên phòng ban:
                         <span class="text-primary">{{ department }}</span>
                     </h1>
 
                     <a-button type="primary" @click="exportExcel"
-                        style="background-color: #198754; border-color: #198754;" class="me-3">
+                        style="background-color: #198754; border-color: #198754;" class="d-block d-sm-inline-block">
                         <i class="fa-solid fa-file-excel me-2"></i>
                         Xuất Excel
                     </a-button>
                 </div>
 
-                <div class="mt-3">
-
-                    <div class="d-flex flex-wrap align-items-end gap-3 mt-3">
-                        <!-- Search -->
-                        <div>
-                            <label class="me-2 form-label fw-semibold">Tìm kiếm</label>
-                            <a-input placeholder="Tên, email, mã NV..." style="width: 250px" v-model:value="search"
-                                @pressEnter="handleSearch" allow-clear />
+                <div class="mt-3 filter-panel">
+                    <div class="d-flex flex-column flex-md-row flex-wrap gap-3">
+                        <div class="filter-item">
+                            <label class="form-label fw-semibold mb-1">Tìm kiếm</label>
+                            <a-input placeholder="Tên, email, mã NV..." v-model:value="search" @pressEnter="handleSearch"
+                                allow-clear class="w-100" />
                         </div>
 
-                        <!-- Status -->
-                        <div>
-                            <label class="me-2 form-label fw-semibold">Trạng thái</label>
-                            <a-select style="width: 180px" v-model:value="status" @change="handleSearch" allow-clear>
+                        <div class="filter-item filter-item-sm">
+                            <label class="form-label fw-semibold mb-1">Trạng thái</label>
+                            <a-select v-model:value="status" @change="handleSearch" allow-clear class="w-100">
                                 <a-select-option value="">Tất cả</a-select-option>
                                 <a-select-option value="active">Đang làm</a-select-option>
                                 <a-select-option value="inactive">Nghỉ việc</a-select-option>
@@ -52,21 +50,19 @@
                         </div>
                     </div>
 
-                    <div class="d-flex flex-wrap align-items-end gap-3 mt-3">
-                        <!-- Sort -->
-                        <div>
-                            <label class="me-2 form-label fw-semibold">Sắp xếp theo</label>
-                            <a-select style="width: 180px" v-model:value="sortBy" @change="handleSearch">
+                    <div class="d-flex flex-column flex-md-row flex-wrap gap-3 mt-3">
+                        <div class="filter-item filter-item-sm">
+                            <label class="form-label fw-semibold mb-1">Sắp xếp theo</label>
+                            <a-select v-model:value="sortBy" @change="handleSearch" class="w-100">
                                 <a-select-option value="id">ID</a-select-option>
                                 <a-select-option value="name">Họ tên</a-select-option>
                                 <a-select-option value="position">Vị trí</a-select-option>
                             </a-select>
                         </div>
 
-                        <!-- Order -->
-                        <div>
-                            <label class="me-2 form-label fw-semibold">Thứ tự</label>
-                            <a-select style="width: 150px" v-model:value="sortOrder" @change="handleSearch">
+                        <div class="filter-item filter-item-xs">
+                            <label class="form-label fw-semibold mb-1">Thứ tự</label>
+                            <a-select v-model:value="sortOrder" @change="handleSearch" class="w-100">
                                 <a-select-option value="asc">Tăng dần</a-select-option>
                                 <a-select-option value="desc">Giảm dần</a-select-option>
                             </a-select>
@@ -80,7 +76,7 @@
                             <tr>
                                 <th>Họ tên</th>
                                 <th>Vị trí</th>
-                                <th class="d-none d-lg-table-cell">Email</th>
+                                <th class="d-none d-md-table-cell">Email</th>
                                 <th>Trạng thái</th>
                                 <th>Hành động</th>
                             </tr>
@@ -90,7 +86,7 @@
                             <tr v-for="employee in employees" :key="employee.id">
                                 <td>{{ employee.user?.name }}</td>
                                 <td>{{ employee.position }}</td>
-                                <td class="d-none d-lg-table-cell">
+                                <td class="d-none d-md-table-cell">
                                     {{ employee.user?.email }}
                                 </td>
                                 <td>
@@ -102,9 +98,13 @@
                                     </span>
                                 </td>
                                 <td>
-                                    <i class="fa-solid fa-eye" style="color:#00BFFF; cursor:pointer"
-                                        @click="viewEmployee(employee)">
-                                    </i>
+                                    <i class="fa-solid fa-eye employee-view-icon" @click="viewEmployee(employee)"></i>
+                                </td>
+                            </tr>
+
+                            <tr v-if="employees.length === 0">
+                                <td colspan="5" class="text-center text-muted">
+                                    Không có nhân viên nào
                                 </td>
                             </tr>
                         </tbody>
@@ -112,7 +112,9 @@
                 </div>
             </div>
         </div>
-        <a-modal v-model:open="isViewModalOpen" ok-text="Đóng" :cancel-button-props="{ style: { display: 'none' } }"
+
+        <a-modal v-model:open="isViewModalOpen" ok-text="Đóng"
+            :cancel-button-props="{ style: { display: 'none' } }"
             @ok="isViewModalOpen = false" @cancel="isViewModalOpen = false" title="Chi tiết nhân viên">
             <p><b>Họ và tên:</b> {{ selectedEmployee?.user?.name }}</p>
             <p><b>Email:</b> {{ selectedEmployee?.user?.email }}</p>
@@ -192,7 +194,7 @@ const exportExcel = async () => {
             responseType: 'blob'
         })
 
-        const url = window.URL.createObjectURL(new Blob([response.data])) // tao tam 1 url
+        const url = window.URL.createObjectURL(new Blob([response.data]))
         const link = document.createElement('a')
         link.href = url
         link.setAttribute('download', 'employee.xlsx')
@@ -209,3 +211,31 @@ onMounted(() => {
 })
 
 </script>
+
+<style scoped>
+.filter-item {
+    flex: 1 1 250px;
+    min-width: 0;
+}
+
+.filter-item-sm {
+    flex: 0 1 180px;
+}
+
+.filter-item-xs {
+    flex: 0 1 150px;
+}
+
+.employee-view-icon {
+    color: #00bfff;
+    cursor: pointer;
+}
+
+@media (max-width: 576px) {
+    .filter-item,
+    .filter-item-sm,
+    .filter-item-xs {
+        flex-basis: 100%;
+    }
+}
+</style>

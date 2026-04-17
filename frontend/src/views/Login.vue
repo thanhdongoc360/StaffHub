@@ -64,6 +64,10 @@ async function handleLogin() {
       case 'management':
         router.push('/management/dashboard')
         break
+      
+      case 'accountant':
+        router.push('/accountant/dashboard')
+        break
     }
 
   } catch (error) {

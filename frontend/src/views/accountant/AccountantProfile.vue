@@ -11,13 +11,13 @@
 
       <!-- Sidebar drawer cho mobile -->
       <a-drawer :visible="showSidebar" placement="left" width="260" @close="showSidebar = false" class="d-lg-none">
-        <SidebarEmployee />
+        <SidebarAccountant />
       </a-drawer>
 
       <div class="row">
         <!-- Sidebar desktop -->
         <div class="d-none d-lg-block col-lg-3">
-          <SidebarEmployee />
+          <SidebarAccountant />
         </div>
 
         <!-- Nội dung chính -->
@@ -89,7 +89,7 @@
 
 <script setup>
 import TheHeader from '../../components/TheHeader.vue';
-import SidebarEmployee from '../../components/SidebarEmployee.vue';
+import SidebarAccountant from '../../components/SidebarAccountant.vue';
 import { ref, onMounted } from 'vue';
 import http from '../../services/http';
 
@@ -113,7 +113,7 @@ const passwordForm = ref({
 
 const fetchProfile = async () => {
   try {
-    const res = await http.get('/employee/profile');
+    const res = await http.get('/accountant/profile');
     profile.value = res.data.data;
   } catch (error) {
     console.log('Error fetching profile: ', error.response);
@@ -126,7 +126,7 @@ onMounted(() => {
 
 const updateProfile = async () => {
   try {
-    await http.put('/employee/profile', {
+    await http.put('/accountant/profile', {
       email: profile.value.email,
       phone: profile.value.phone
     });
@@ -143,7 +143,7 @@ const handleChangePassword = async () => {
       return;
     }
 
-    const res = await http.put('/employee/change-password', {
+    const res = await http.put('/accountant/change-password', {
       current_password: passwordForm.value.current_password,
       new_password: passwordForm.value.new_password
     });

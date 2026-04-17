@@ -14,6 +14,8 @@ use App\Http\Controllers\Management\ManagementProfileController;
 
 use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\ManagementEmployeesExport;
+use App\Http\Controllers\Accountant\AccountantDashboardController;
+use App\Http\Controllers\Accountant\AccountantSalaryController;
 use App\Http\Controllers\PerformanceController;
 
 /*
@@ -31,7 +33,7 @@ Route::post('/login', [AuthController::class, 'login']);
 
 Route::middleware('auth:sanctum')->group(function () {
     Route::post('/logout', [AuthController::class, 'logout']);
-
+   
     Route::get('/notifications', [NotificationController::class, 'index']);
     Route::put('/notifications/{id}/read', [NotificationController::class, 'markAsRead']);
     Route::put('/notifications/read-all', [NotificationController::class, 'markAllAsRead']);
@@ -100,7 +102,32 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('/performance/{employeeId}', [PerformanceController::class, 'show']);
         Route::post('/performance', [PerformanceController::class, 'store']);
         Route::put('/performance/{id}/confirm', [PerformanceController::class, 'confirm']);
-        Route::get('performance/history/{employeeId}', [PerformanceController::class, 'history']);
+        Route::get('/performance/history/{employeeId}', [PerformanceController::class, 'history']);
+    });
+
+    Route::middleware('role:accountant')->prefix('accountant')->group(function () {
+        Route::get('/dashboard', [AccountantDashboardController::class, 'index']);
+
+        Route::get('/salaries', [AccountantSalaryController::class, 'index']);
+        Route::post('/salary/calculate', [AccountantSalaryController::class, 'calculate']);
+        Route::post('/salary/approve', [AccountantSalaryController::class, 'approve']);
+        Route::post('/salary/publish', [AccountantSalaryController::class, 'publish']);
+        Route::post('/salary/create', [AccountantSalaryController::class, 'create']);
+
+        Route::get('/salary/{id}', [AccountantSalaryController::class, 'show']);
+        Route::put('/salary/{id}', [AccountantSalaryController::class, 'update']);
+
+        Route::post('/salary/{id}/calculate', [AccountantSalaryController::class, 'calculateOne']);
+        Route::post('/salary/{id}/approve', [AccountantSalaryController::class, 'approveOne']);
+        Route::post('/salary/{id}/publish', [AccountantSalaryController::class, 'publishOne']);
+        Route::post('/salary/export', [AccountantSalaryController::class, 'export']);
+
+        Route::get('/profile', [EmployeeController::class, 'profile']);
+        Route::put('/profile', [EmployeeController::class, 'updateProfile']);
+        Route::put('/change-password', [EmployeeController::class, 'changePassword']);
+
+        Route::post('/leaves', [LeaveController::class, 'store']);
+        Route::get('/leaves', [LeaveController::class, 'index']);
     });
 });
 

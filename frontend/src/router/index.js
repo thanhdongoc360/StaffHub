@@ -112,6 +112,33 @@ const routes = [
     component: () => import("../views/management/ManagementPerformanceReviews.vue"),
     meta: { role: "management" },
   },
+
+  // Accountant routes
+  {
+    path: "/accountant/dashboard",
+    component: () => import("../views/accountant/AccountantDashboard.vue"),
+    meta: { role: "accountant" },
+  },
+  {
+    path: "/accountant/salaries",
+    component: () => import("../views/accountant/AccountantSalariesList.vue"),
+    meta: { role: "accountant" },
+  },
+  {
+    path: "/accountant/notifications",
+    component: () => import("../views/accountant/AccountantNotifications.vue"),
+    meta: { role: "accountant" },
+  },
+  {
+    path: "/accountant/profile",
+    component: () => import("../views/accountant/AccountantProfile.vue"),
+    meta: { role: "accountant" },
+  },
+  {
+    path: "/accountant/leaves",
+    component: () => import("../views/accountant/AccountantLeaves.vue"),
+    meta: { role: "accountant" },
+  },
 ];
 
 const router = createRouter({

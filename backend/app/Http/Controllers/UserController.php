@@ -90,6 +90,10 @@ class UserController extends Controller
     {
         $user = User::findOrFail($id);
 
+        $user->employee()?->delete();
+
+        $user->notifications()?->delete();
+
         $user->delete();
 
         return response()->json([

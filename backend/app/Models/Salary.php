@@ -15,10 +15,12 @@ class Salary extends Model
         'employee_id',
         'base_salary',
         'bonus',
+        'tax',
         'total',
         'month',
         'year',
-        'note'
+        'note',
+        'status'
     ];
 
     public function employee()

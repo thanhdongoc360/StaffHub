@@ -2,8 +2,8 @@
   <div>
     <TheHeader />
 
-    <div class="container-fluid">
-      <a-button @click="showSidebar = true" class="d-lg-none mb-2">
+    <div class="container-fluid mt-3">
+      <a-button @click="showSidebar = true" class="d-lg-none mb-3">
         <i class="fa-solid fa-bars"></i>
       </a-button>
 
@@ -23,7 +23,9 @@
         </div>
 
         <div class="col-12 col-lg-9">
-          <h1 class="mt-3">Quản lý đơn nghỉ phép</h1>
+          <div class="d-flex flex-column flex-lg-row justify-content-between align-items-start align-items-lg-center mt-3 gap-2">
+            <h1 class="mb-0">Quản lý đơn nghỉ phép</h1>
+          </div>
 
           <div class="table-responsive mt-4">
             <table class="table">
@@ -50,21 +52,22 @@
 
                   <td>
                     <template v-if="leave.status === 'Chờ duyệt'">
-                      <a-button
-                        type="primary"
-                        class="me-2"
-                        @click="approve(leave.id)"
-                      >
-                        Duyệt
-                      </a-button>
+                      <div class="d-flex flex-column flex-sm-row gap-2">
+                        <a-button
+                          type="primary"
+                          @click="approve(leave.id)"
+                        >
+                          Duyệt
+                        </a-button>
 
-                      <a-button
-                        type="primary"
-                        danger
-                        @click="reject(leave.id)"
-                      >
-                        Từ chối
-                      </a-button>
+                        <a-button
+                          type="primary"
+                          danger
+                          @click="reject(leave.id)"
+                        >
+                          Từ chối
+                        </a-button>
+                      </div>
                     </template>
 
                     <template v-else-if="leave.status === 'Đã duyệt'">
@@ -121,3 +124,10 @@ const reject = async (id) => {
 
 onMounted(fetchLeaves)
 </script>
+
+<style scoped>
+.table td,
+.table th {
+  vertical-align: middle;
+}
+</style>

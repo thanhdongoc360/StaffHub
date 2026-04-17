@@ -16,23 +16,84 @@ class SalarySeeder extends Seeder
     public function run()
     {
         DB::table('salaries')->insert([
-            'employee_id' => 3,
-            'base_salary' => 6000000,
-            'bonus' => 500000,
-            'total' => 6500000,
-            'month' => 1,
-            'year' => 2025,
-            'note' => 'Lương tháng 12'
-        ]);
 
-        DB::table('salaries')->insert([
-            'employee_id' => 3,
-            'base_salary' => 5700000,
-            'bonus' => 400000,
-            'total' => 6100000,
-            'month' => 2,
-            'year' => 2025,
-            'note' => 'Lương tháng 11'
+            // ===== DRAFT =====
+            
+            [
+                'employee_id' => 2,
+                'base_salary' => 12000000,
+                'bonus' => 1000000,
+                'tax' => 500000,
+                'total' => 0,
+                'month' => 4,
+                'year' => 2026,
+                'note' => 'Chưa tính',
+                'status' => 'draft'
+            ],
+
+            // ===== CALCULATED =====
+            [
+                'employee_id' => 3,
+                'base_salary' => 15000000,
+                'bonus' => 2000000,
+                'tax' => 1500000,
+                'total' => 15500000,
+                'month' => 4,
+                'year' => 2026,
+                'note' => 'Đã tính',
+                'status' => 'calculated'
+            ],
+
+            // ===== APPROVED =====
+            [
+                'employee_id' => 4,
+                'base_salary' => 20000000,
+                'bonus' => 3000000,
+                'tax' => 2000000,
+                'total' => 21000000,
+                'month' => 4,
+                'year' => 2026,
+                'note' => 'Đã duyệt',
+                'status' => 'approved'
+            ],
+
+            // ===== PUBLISHED =====
+            [
+                'employee_id' => 5,
+                'base_salary' => 18000000,
+                'bonus' => 1000000,
+                'tax' => 1000000,
+                'total' => 18000000,
+                'month' => 4,
+                'year' => 2026,
+                'note' => 'Đã công bố',
+                'status' => 'published'
+            ],
+
+            // ===== LỖI TEST WARNING =====
+            [
+                'employee_id' => 6,
+                'base_salary' => 0,
+                'bonus' => 1000000,
+                'tax' => 500000,
+                'total' => 0,
+                'month' => 4,
+                'year' => 2026,
+                'note' => 'Thiếu base salary',
+                'status' => 'draft'
+            ],
+            [
+                'employee_id' => 7,
+                'base_salary' => 5000000,
+                'bonus' => 0,
+                'tax' => 6000000,
+                'total' => -1000000,
+                'month' => 4,
+                'year' => 2026,
+                'note' => 'Lương âm',
+                'status' => 'calculated'
+            ]
+
         ]);
     }
 }
