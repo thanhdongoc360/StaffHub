@@ -48,6 +48,11 @@ const routes = [
     component: () => import("../views/admin/AdminProfile.vue"),
     meta: { requiresAuth: true, role: "admin" },
   },
+  {
+    path: "/admin/performance",
+    component: () => import("../views/admin/AdminPerformance.vue"),
+    meta: { requiresAuth: true, role: "admin" },
+  },
 
   // Employee routes
   {

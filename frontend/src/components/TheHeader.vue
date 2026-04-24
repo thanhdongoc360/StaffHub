@@ -19,6 +19,7 @@ import axios from 'axios'
 import { useRouter } from 'vue-router'
 
 const router = useRouter()
+import http from "../services/http";
 
 const goHome = () => {
     const user = JSON.parse(localStorage.getItem('user'))
@@ -36,6 +37,12 @@ const goHome = () => {
         case 'employee':
             router.push('/employee/dashboard')
             break
+        case 'management':
+            router.push('/management/dashboard')
+            break
+        case 'accountant':
+            router.push('/accountant/dashboard')
+            break
         default:
             router.push('/login') // fallback
     }
@@ -43,15 +50,7 @@ const goHome = () => {
 
 const handleLogout = async () => {
     try {
-        await axios.post(
-            'http://localhost:8000/api/logout',
-            {},
-            {
-                headers: {
-                    Authorization: `Bearer ${localStorage.getItem('token')}`
-                }
-            }
-        )
+        await http.post('/logout')
 
         localStorage.removeItem('token')
         localStorage.removeItem('user')
@@ -62,6 +61,4 @@ const handleLogout = async () => {
         console.log(error)
     }
 }
-
-
 </script>

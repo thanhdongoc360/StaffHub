@@ -101,7 +101,7 @@ const showModalLeave = () => {
 
 const fetchLeaves = async () => {
     try {
-        const res = await http.get('http://localhost:8000/api/leaves')
+        const res = await http.get('/leaves')
 
         leaves.value = res.data.data
     }

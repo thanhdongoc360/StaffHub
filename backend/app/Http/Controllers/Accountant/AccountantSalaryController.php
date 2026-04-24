@@ -182,37 +182,52 @@ class AccountantSalaryController extends Controller
         $month = $request->month;
         $year = $request->year;
 
-        // lấy employee đã có lương
+        // xác định tháng trước
+        $prevMonth = $month == 1 ? 12 : $month - 1;
+        $prevYear = $month == 1 ? $year - 1 : $year;
+
+        // lấy salary tháng trước
+        $prevSalaries = Salary::where('month', $prevMonth)
+            ->where('year', $prevYear)
+            ->get()
+            ->keyBy('employee_id'); // để map nhanh
+
+        // employee đã có lương tháng này
         $existing = Salary::where('month', $month)
             ->where('year', $year)
             ->pluck('employee_id')
             ->toArray();
 
-        // lấy employee chưa có
+        // employee chưa có
         $employees = DB::table('employees')
             ->whereNotIn('id', $existing)
             ->get();
 
-        // ❌ nếu không còn ai để tạo
         if ($employees->isEmpty()) {
             return response()->json([
                 'message' => 'Bảng lương tháng này đã được tạo rồi'
             ], 400);
         }
 
-        // tạo bulk
         $data = [];
 
         foreach ($employees as $emp) {
+            $prev = $prevSalaries->get($emp->id);
+
             $data[] = [
                 'employee_id' => $emp->id,
                 'month' => $month,
                 'year' => $year,
-                'base_salary' => 0,
-                'bonus' => 0,
-                'tax' => 0,
-                'total' => 0,
-                'note' => '',
+
+                // nếu có tháng trước thì copy, không thì 0
+                'base_salary' => $prev->base_salary ?? 0,
+                'bonus' => $prev->bonus ?? 0,
+                'tax' => $prev->tax ?? 0,
+                'total' => ($prev->base_salary ?? 0)
+                    + ($prev->bonus ?? 0)
+                    - ($prev->tax ?? 0),
+                'note' => $prev->note ?? '',
+
                 'status' => 'draft',
                 'created_at' => now(),
                 'updated_at' => now()
@@ -222,7 +237,7 @@ class AccountantSalaryController extends Controller
         Salary::insert($data);
 
         return response()->json([
-            'message' => 'Tạo bảng lương thành công'
+            'message' => 'Tạo bảng lương thành công (copy từ tháng trước)'
         ]);
     }
 }

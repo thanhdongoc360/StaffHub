@@ -119,7 +119,7 @@ const statusClass = (status) => {
 
 const fetchLeaves = async () => {
     try {
-        const res = await http.get('http://localhost:8000/api/accountant/leaves')
+        const res = await http.get('/accountant/leaves')
 
         leaves.value = res.data.data
     }
@@ -137,7 +137,7 @@ const createLeave = async () => {
     const endDate = dateRange.value[1]?.format("YYYY-MM-DD")
 
     try {
-        const res = await http.post('accountant/leaves', {
+        const res = await http.post('/accountant/leaves', {
             start_date: startDate,
             end_date: endDate,
             type: typeLeave.value,

@@ -60,7 +60,7 @@
                                     <th>Hành động</th>
                                 </tr>
                             </thead>
-
+ 
                             <tbody>
                                 <tr v-for="item in list" :key="item.id">
                                     <td class="text-nowrap">{{ item.code }}</td>

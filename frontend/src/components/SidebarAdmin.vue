@@ -30,6 +30,12 @@
                 </li>
 
                 <li>
+                    <router-link to="/admin/performance" class="nav-link text-black">
+                        <i class="fa-solid fa-money-bill-wave me-2"></i>Hiệu suất nhân viên
+                    </router-link>
+                </li>
+
+                <li>
                     <router-link to="/admin/file" class="nav-link text-black">
                         <i class="fa-solid fa-user me-2"></i>Hồ sơ
                     </router-link>

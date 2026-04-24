@@ -44,7 +44,10 @@
                                 <p><strong>Phòng ban:</strong> {{ userStore.user?.employee.department }}</p>
                                 <p>
                                     <strong>Trạng thái:</strong>
-                                    <span class="status-badge">{{ userStore.user?.employee.status }}</span>
+                                    <span
+                                        :class="['status-badge', employeeStatusClass(userStore.user?.employee.status)]">
+                                        {{ formatStatus(userStore.user?.employee.status) }}
+                                    </span>
                                 </p>
                             </div>
                         </div>
@@ -84,7 +87,7 @@
                                                 <td class="d-none d-md-table-cell">{{ leave.end_date }}</td>
                                                 <td class="d-none d-lg-table-cell">
                                                     {{ Math.ceil((new Date(leave.end_date) - new Date(leave.start_date))
-                                                    / (1000 * 60 * 60 * 24)) + 1 }}
+                                                        / (1000 * 60 * 60 * 24)) + 1 }}
                                                 </td>
                                                 <td>{{ leave.type }}</td>
                                                 <td class="d-none d-lg-table-cell">{{ leave.reason }}</td>
@@ -169,6 +172,24 @@ onMounted(async () => {
     }
 })
 
+const formatStatus = (status) => {
+    const value = (status || '').toLowerCase()
+
+    if (value === 'active') return 'Đang làm việc'
+    if (value === 'inactive') return 'Ngừng hoạt động'
+
+    return status // fallback nếu có trạng thái khác
+}
+
+const employeeStatusClass = (status) => {
+    const value = (status || '').toLowerCase()
+
+    if (value === 'active') return 'status-active'
+    if (value === 'inactive') return 'status-inactive'
+
+    return 'status-default'
+}
+
 onMounted(() => {
     fetchLeaveHistory();
 });
@@ -187,7 +208,6 @@ onMounted(() => {
 }
 
 .status-badge {
-    background-color: green;
     color: white;
     padding: 6px 12px;
     border-radius: 8px;
@@ -213,5 +233,13 @@ onMounted(() => {
 .status-default {
     color: #6c757d;
     font-weight: 600;
+}
+
+.status-active {
+    background-color: #198754; /* xanh lá */
+}
+
+.status-inactive {
+    background-color: #6c757d; /* xám */
 }
 </style>

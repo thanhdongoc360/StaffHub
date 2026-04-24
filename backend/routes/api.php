@@ -33,7 +33,7 @@ Route::post('/login', [AuthController::class, 'login']);
 
 Route::middleware('auth:sanctum')->group(function () {
     Route::post('/logout', [AuthController::class, 'logout']);
-   
+
     Route::get('/notifications', [NotificationController::class, 'index']);
     Route::put('/notifications/{id}/read', [NotificationController::class, 'markAsRead']);
     Route::put('/notifications/read-all', [NotificationController::class, 'markAllAsRead']);
@@ -47,6 +47,7 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('/employee/profile', [EmployeeController::class, 'profile']);
         Route::put('/employee/profile', [EmployeeController::class, 'updateProfile']);
         Route::put('/employee/change-password', [EmployeeController::class, 'changePassword']);
+
     });
 
     Route::middleware('role:admin')->prefix('admin')->group(function () {
@@ -69,6 +70,10 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('/profile', [AdminProfileController::class, 'profile']);
         Route::put('/profile', [AdminProfileController::class, 'updateProfile']);
         Route::put('/change-password', [AdminProfileController::class, 'changePassword']);
+
+        Route::get('/performance', [PerformanceController::class, 'index']);
+        Route::get('/performance/{employeeId}', [PerformanceController::class, 'show']);
+        Route::get('/performance/history/{employeeId}', [PerformanceController::class, 'history']);
     });
 
     Route::middleware('role:management')->prefix('management')->group(function () {

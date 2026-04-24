@@ -85,7 +85,11 @@
                                     <td class="d-none d-lg-table-cell">
                                         {{ user.email }}
                                     </td>
-                                    <td>{{ user.employee?.status }}</td>
+                                    <td>
+                                        <span :class="['status-badge', employeeStatusClass(user.employee?.status)]">
+                                            {{ formatStatus(user.employee?.status) }}
+                                        </span>
+                                    </td>
                                 </tr>
 
                                 <tr v-if="users.length === 0">
@@ -127,6 +131,24 @@ const fetchDashboard = async () => {
     }
 }
 
+const formatStatus = (status) => {
+    const value = (status || '').toLowerCase()
+
+    if (value === 'active') return 'Đang làm'
+    if (value === 'inactive') return 'Nghỉ việc'
+
+    return status
+}
+
+const employeeStatusClass = (status) => {
+    const value = (status || '').toLowerCase()
+
+    if (value === 'active') return 'status-active'
+    if (value === 'inactive') return 'status-inactive'
+
+    return 'status-default'
+}
+
 onMounted(fetchDashboard)
 
 const router = useRouter()
@@ -146,5 +168,24 @@ const goEmployees = () => {
 
 .dashboard-card h2 {
     font-weight: 500;
+}
+
+.status-badge {
+    font-weight: 600;
+    font-size: 0.9rem;
+}
+
+.status-active {
+    color: #198754;
+    /* xanh */
+}
+
+.status-inactive {
+    color: red;
+    /* xám */
+}
+
+.status-default {
+    color: #adb5bd;
 }
 </style>

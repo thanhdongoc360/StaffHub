@@ -17,17 +17,21 @@ class PerformanceController extends Controller
         $user = auth()->user();
 
         // lấy employee của user login
-        $employee = $user->employee;
+        $query = Employee::query();
 
-        if (!$employee) {
-            return response()->json([
-                'message' => 'User chưa liên kết employee'
-            ], 400);
+        if ($user->role === 'management') {
+            $employee = $user->employee;
+
+            if (!$employee) {
+                return response()->json([
+                    'message' => 'User chưa liên kết employee'
+                ], 400);
+            }
+
+            $query->where('department', $employee->department);
         }
 
-        $department = $employee->department;
-
-        $employees = Employee::where('department', $department)
+        $employees = $query
             ->when($search, function ($q) use ($search) {
                 $q->where('employee_code', 'like', "%$search%")
                     ->orWhereHas('user', function ($q2) use ($search) {
@@ -63,25 +67,28 @@ class PerformanceController extends Controller
         $year = $request->query('year');
 
         $user = auth()->user();
-        $userEmployee = $user->employee;
 
-        if (!$userEmployee) {
-            return response()->json(['message' => 'No employee linked'], 400);
+        $query = Employee::with('user')->where('id', $employeeId);
+
+        // 👉 nếu management → check phòng ban
+        if ($user->role === 'management') {
+            $employee = $user->employee;
+
+            if (!$employee) {
+                return response()->json(['message' => 'No employee linked'], 400);
+            }
+
+            $query->where('department', $employee->department);
         }
 
-        $department = $userEmployee->department;
-
-        $employee = Employee::with('user')
-            ->where('id', $employeeId)
-            ->where('department', $department)
-            ->firstOrFail();
+        $employee = $query->firstOrFail();
 
         $review = PerformanceReview::where('employee_id', $employeeId)
             ->where('period_month', $month)
             ->where('period_year', $year)
             ->first();
 
-        if (!$review) {
+        if (!$review && $user->role === 'management') {
             $review = PerformanceReview::create([
                 'employee_id' => $employeeId,
                 'reviewer_id' => $user->id,
@@ -109,12 +116,20 @@ class PerformanceController extends Controller
                 'total_score' => $review->total_score,
                 'rank' => $review->rank,
                 'status' => $review->status,
-            ]
+            ] 
         ]);
     }
 
     public function store(Request $request)
     {
+        $user = auth()->user();
+
+        if ($user->role === 'admin') {
+            return response()->json([
+                'message' => 'Admin chỉ được xem'
+            ], 403);
+        }
+
         $request->validate([
             'employee_id' => 'required|exists:employees,id',
             'month' => 'required|integer',

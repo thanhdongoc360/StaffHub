@@ -34,7 +34,7 @@
 
                 <div class="mt-3 filter-panel">
                     <div class="d-flex flex-column flex-md-row flex-wrap gap-3">
-                        <div class="filter-item">
+                        <div class="filter-item filter-item-search">
                             <label class="form-label fw-semibold mb-1">Tìm kiếm</label>
                             <a-input placeholder="Tên, email, mã NV..." v-model:value="search" @pressEnter="handleSearch"
                                 allow-clear class="w-100" />
@@ -218,6 +218,10 @@ onMounted(() => {
     min-width: 0;
 }
 
+.filter-item-search {
+    flex: 0 1 520px;
+}
+
 .filter-item-sm {
     flex: 0 1 180px;
 }
@@ -233,6 +237,7 @@ onMounted(() => {
 
 @media (max-width: 576px) {
     .filter-item,
+    .filter-item-search,
     .filter-item-sm,
     .filter-item-xs {
         flex-basis: 100%;
