@@ -35,6 +35,12 @@
                 </li>
 
                 <li>
+                    <router-link to="/management/attendance" class="nav-link text-black">
+                        <i class="fa-solid fa-money-bill-wave me-2"></i>Xem chấm công
+                    </router-link>
+                </li>
+
+                <li>
                     <router-link to="/management/profile" class="nav-link text-black">
                         <i class="fa-solid fa-user me-2"></i>Hồ sơ
                     </router-link>

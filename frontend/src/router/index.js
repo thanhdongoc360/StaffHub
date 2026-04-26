@@ -80,6 +80,11 @@ const routes = [
     component: () => import("../views/employee/EmployeeFile.vue"),
     meta: { requiresAuth: true, role: "employee" },
   },
+  {
+    path: "/employee/attendance",
+    component: () => import("../views/employee/EmployeeAttendance.vue"),
+    meta: { requiresAuth: true, role: "employee" },
+  },
 
   // Management routes
   {
@@ -115,6 +120,11 @@ const routes = [
   {
     path: "/management/performance_reviews",
     component: () => import("../views/management/ManagementPerformanceReviews.vue"),
+    meta: { role: "management" },
+  },
+  {
+    path: "/management/attendance",
+    component: () => import("../views/management/ManagementAttendance.vue"),
     meta: { role: "management" },
   },
 

@@ -24,6 +24,12 @@
                 </li>
 
                 <li>
+                    <router-link to="/employee/attendance" class="nav-link text-black">
+                        <i class="fa-solid fa-money-bill-wave me-2"></i>Chấm công
+                    </router-link>
+                </li>
+
+                <li>
                     <router-link to="/employee/file" class="nav-link text-black">
                         <i class="fa-solid fa-user me-2"></i>Hồ sơ
                     </router-link>

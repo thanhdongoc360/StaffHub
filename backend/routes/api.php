@@ -17,6 +17,7 @@ use App\Exports\ManagementEmployeesExport;
 use App\Http\Controllers\Accountant\AccountantDashboardController;
 use App\Http\Controllers\Accountant\AccountantSalaryController;
 use App\Http\Controllers\PerformanceController;
+use App\Http\Controllers\AttendanceController;
 
 /*
 |--------------------------------------------------------------------------
@@ -48,6 +49,9 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::put('/employee/profile', [EmployeeController::class, 'updateProfile']);
         Route::put('/employee/change-password', [EmployeeController::class, 'changePassword']);
 
+        Route::post('/attendance/check-in', [AttendanceController::class, 'checkIn']);
+        Route::post('/attendance/check-out', [AttendanceController::class, 'checkOut']);
+        Route::get('/attendance/my', [AttendanceController::class, 'myAttendance']);
     });
 
     Route::middleware('role:admin')->prefix('admin')->group(function () {
@@ -108,6 +112,9 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::post('/performance', [PerformanceController::class, 'store']);
         Route::put('/performance/{id}/confirm', [PerformanceController::class, 'confirm']);
         Route::get('/performance/history/{employeeId}', [PerformanceController::class, 'history']);
+
+        Route::get('/attendance', [AttendanceController::class, 'managementIndex']);
+        Route::put('/attendance/{id}', [AttendanceController::class, 'update']);
     });
 
     Route::middleware('role:accountant')->prefix('accountant')->group(function () {
