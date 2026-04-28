@@ -39,7 +39,9 @@
                                 <td class="d-none d-md-table-cell">{{ leave.start_date }}</td>
                                 <td class="d-none d-md-table-cell">{{ leave.end_date }}</td>
                                 <td class="d-none d-lg-table-cell">{{ leave.reason }}</td>
-                                <td class="d-none d-lg-table-cell">{{ leave.status }}</td>
+                                <td class="d-none d-lg-table-cell">
+                                    <span :class="statusClass(leave.status)">{{ statusText(leave.status) }}</span>
+                                </td>
                                 <td>
                                     <template v-if="leave.status === 'Chờ duyệt'">
                                         <a-button class="me-2" type="primary" @click="approve(leave.id)">
@@ -109,6 +111,20 @@ const reject = async (id) => {
     } catch (error) {
         console.log('Không từ chối được đơn nghỉ:', error)
     }
+}
+
+const statusText = (status) => {
+    if (status === 'Chờ duyệt') return 'Chờ duyệt'
+    if (status === 'Đã duyệt') return 'Đã duyệt'
+    if (status === 'Từ chối') return 'Từ chối'
+    return status || 'Không xác định'
+}
+
+const statusClass = (status) => {
+    if (status === 'Chờ duyệt') return 'text-warning fw-bold'
+    if (status === 'Đã duyệt') return 'text-success fw-bold'
+    if (status === 'Từ chối') return 'text-danger fw-bold'
+    return 'text-muted fw-bold'
 }
 
 onMounted(() => {

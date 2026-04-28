@@ -56,7 +56,7 @@ class ManagementEmployeeController extends Controller
         return response()->json(
             [
                 'department' => $department,
-                'employees' => $employees
+                'employees' => $employees,
             ]
         );
     }

@@ -81,7 +81,11 @@
                                     <td>{{ user.employee?.position }}</td>
                                     <td class="d-none d-lg-table-cell">{{ user.employee?.department }}</td>
                                     <td class="d-none d-lg-table-cell">{{ user.email }}</td>
-                                    <td>{{ user.employee?.status }}</td>
+                                    <td>
+                                        <span :class="statusClass(user.employee?.status)">
+                                            {{ statusText(user.employee?.status) }}
+                                        </span>
+                                    </td>
                                 </tr>
                             </tbody>
                         </table>
@@ -132,6 +136,18 @@ const employeeManagement = async () => {
     catch (error) {
         console.log(error)
     }
+}
+
+const statusText = (status) => {
+    if (status === 'active') return 'Đang làm'
+    if (status === 'inactive') return 'Nghỉ việc'
+    return status || 'Không xác định'
+}
+
+const statusClass = (status) => {
+    if (status === 'active') return 'text-success'
+    if (status === 'inactive') return 'text-danger'
+    return 'text-muted'
 }
 
 

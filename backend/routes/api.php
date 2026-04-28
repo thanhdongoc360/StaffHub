@@ -18,6 +18,7 @@ use App\Http\Controllers\Accountant\AccountantDashboardController;
 use App\Http\Controllers\Accountant\AccountantSalaryController;
 use App\Http\Controllers\PerformanceController;
 use App\Http\Controllers\AttendanceController;
+use App\Http\Controllers\ScheduleController;
 
 /*
 |--------------------------------------------------------------------------
@@ -52,6 +53,8 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::post('/attendance/check-in', [AttendanceController::class, 'checkIn']);
         Route::post('/attendance/check-out', [AttendanceController::class, 'checkOut']);
         Route::get('/attendance/my', [AttendanceController::class, 'myAttendance']);
+
+        Route::get('schedule/my', [ScheduleController::class, 'mySchedule']);
     });
 
     Route::middleware('role:admin')->prefix('admin')->group(function () {
@@ -78,6 +81,11 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('/performance', [PerformanceController::class, 'index']);
         Route::get('/performance/{employeeId}', [PerformanceController::class, 'show']);
         Route::get('/performance/history/{employeeId}', [PerformanceController::class, 'history']);
+   
+        Route::get('/shifts', [ScheduleController::class, 'getShifts']);
+        Route::post('/shifts', [ScheduleController::class, 'storeShift']);
+        Route::put('/shifts/{id}', [ScheduleController::class, 'updateShift']);
+        Route::delete('/shifts/{id}', [ScheduleController::class, 'deleteShift']);
     });
 
     Route::middleware('role:management')->prefix('management')->group(function () {
@@ -115,6 +123,13 @@ Route::middleware('auth:sanctum')->group(function () {
 
         Route::get('/attendance', [AttendanceController::class, 'managementIndex']);
         Route::put('/attendance/{id}', [AttendanceController::class, 'update']);
+
+        Route::get('/shifts', [ScheduleController::class, 'getShifts']);
+
+        Route::post('/schedule/assign', [ScheduleController::class, 'assignEmployees']);
+        Route::post('/schedule/create-week', [ScheduleController::class, 'createWeekSchedule']);
+
+        Route::get('/schedule', [ScheduleController::class, 'managementView']);
     });
 
     Route::middleware('role:accountant')->prefix('accountant')->group(function () {

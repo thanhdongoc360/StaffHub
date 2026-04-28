@@ -17,6 +17,7 @@ const routes = [
     component: () => import("../views/Login.vue"),
   },
 
+
   // Admin routes
   {
     path: "/admin/dashboard",
@@ -53,6 +54,13 @@ const routes = [
     component: () => import("../views/admin/AdminPerformance.vue"),
     meta: { requiresAuth: true, role: "admin" },
   },
+  {
+    path: "/admin/shifts",
+    component: () => import("../views/admin/AdminShiftManagement.vue"),
+    meta: { requiresAuth: true, role: "admin" },
+  },
+
+
 
   // Employee routes
   {
@@ -85,6 +93,13 @@ const routes = [
     component: () => import("../views/employee/EmployeeAttendance.vue"),
     meta: { requiresAuth: true, role: "employee" },
   },
+  {
+    path: "/employee/schedule",
+    component: () => import("../views/employee/EmployeeSchedule.vue"),
+    meta: { requiresAuth: true, role: "employee" },
+  },
+
+
 
   // Management routes
   {
@@ -127,6 +142,13 @@ const routes = [
     component: () => import("../views/management/ManagementAttendance.vue"),
     meta: { role: "management" },
   },
+  {
+    path: "/management/schedule",
+    component: () => import("../views/management/ManagementSchedule.vue"),
+    meta: { role: "management" },
+  },
+
+
 
   // Accountant routes
   {

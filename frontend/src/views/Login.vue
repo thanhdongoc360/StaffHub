@@ -17,6 +17,9 @@
           <label class="form-check-label" for="check1">Ghi nhớ</label>
         </div>
         <button type="submit" class="btn btn-primary">Đăng nhập</button>
+        <div v-if="errorMessage" class="alert alert-danger mt-3">
+          {{ errorMessage }}
+        </div>
       </form>
     </div>
   </div>
@@ -33,6 +36,8 @@ const password = ref('')
 
 const router = useRouter()
 const userStore = useUserStore()
+
+const errorMessage = ref('')
 
 async function handleLogin() {
   try {
@@ -60,18 +65,22 @@ async function handleLogin() {
       case 'employee':
         router.push('/employee/dashboard')
         break
-      
+
       case 'management':
         router.push('/management/dashboard')
         break
-      
+
       case 'accountant':
         router.push('/accountant/dashboard')
         break
     }
 
   } catch (error) {
-    console.log(error.response.data)
+    if (error.response && error.response.status === 401) {
+      errorMessage.value = 'Tài khoản hoặc mật khẩu không chính xác'
+    } else {
+      errorMessage.value = 'Có lỗi xảy ra, thử lại sau'
+    }
   }
 }
 </script>

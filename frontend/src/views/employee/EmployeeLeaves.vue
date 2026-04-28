@@ -47,7 +47,9 @@
                                     </td>
                                     <td>{{ leave.type }}</td>
                                     <td class="d-none d-lg-table-cell">{{ leave.reason }}</td>
-                                    <td>{{ leave.status }}</td>
+                                    <td>
+                                        <span :class="leaveStatusClass(leave.status)">{{ leave.status }}</span>
+                                    </td>
                                     <td class="d-none d-lg-table-cell">{{ leave.created_at }}</td>
                                 </tr>
                             </tbody>
@@ -138,4 +140,36 @@ const createLeave = async () => {
     }
 }
 
+const leaveStatusClass = (status) => {
+    const value = (status || '').toLowerCase()
+
+    if (value.includes('đã duyệt')) return 'status-approved'
+    if (value.includes('từ chối')) return 'status-rejected'
+    if (value.includes('chờ duyệt')) return 'status-pending'
+
+    return 'status-default'
+}
+
 </script>
+
+<style scoped>
+.status-approved {
+    color: #198754;
+    font-weight: 600;
+}
+
+.status-rejected {
+    color: #dc3545;
+    font-weight: 600;
+}
+
+.status-pending {
+    color: #fd7e14;
+    font-weight: 600;
+}
+
+.status-default {
+    color: #6c757d;
+    font-weight: 500;
+}
+</style>

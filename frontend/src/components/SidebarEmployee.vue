@@ -30,6 +30,12 @@
                 </li>
 
                 <li>
+                    <router-link to="/employee/schedule" class="nav-link text-black">
+                        <i class="fa-solid fa-money-bill-wave me-2"></i>Lịch làm việc
+                    </router-link>
+                </li>
+
+                <li>
                     <router-link to="/employee/file" class="nav-link text-black">
                         <i class="fa-solid fa-user me-2"></i>Hồ sơ
                     </router-link>

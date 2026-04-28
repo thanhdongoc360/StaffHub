@@ -41,6 +41,12 @@
                 </li>
 
                 <li>
+                    <router-link to="/management/schedule" class="nav-link text-black">
+                        <i class="fa-solid fa-money-bill-wave me-2"></i>Tạo lịch làm việc
+                    </router-link>
+                </li>
+
+                <li>
                     <router-link to="/management/profile" class="nav-link text-black">
                         <i class="fa-solid fa-user me-2"></i>Hồ sơ
                     </router-link>
@@ -69,6 +75,10 @@
 </script>
 
 <style>
+.nav-link {
+    white-space: nowrap;
+}
+
 .nav-link:hover {
   background-color: #0d6efd;
   color: #f8f9fa !important;

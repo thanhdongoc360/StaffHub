@@ -46,7 +46,11 @@
                                     <td>{{ user.employee?.position }}</td>
                                     <td class="d-none d-lg-table-cell">{{ user.employee?.department }}</td>
                                     <td class="d-none d-lg-table-cell">{{ user.email }}</td>
-                                    <td>{{ user.employee?.status }}</td>
+                                    <td>
+                                        <span :class="statusClass(user.employee?.status)">
+                                            {{ statusText(user.employee?.status) }}
+                                        </span>
+                                    </td>
                                     <td>
                                         <a-space>
                                             <i class="fa-solid fa-eye" style="color: #00BFFF; cursor: pointer"
@@ -72,7 +76,11 @@
             <p><b>Mã nhân viên:</b> {{ selectedUser?.employee?.employee_code }}</p>
             <p><b>Vị trí:</b> {{ selectedUser?.employee?.position }}</p>
             <p><b>Phòng ban:</b> {{ selectedUser?.employee?.department }}</p>
-            <p><b>Trạng thái:</b> {{ selectedUser?.employee?.status }}</p>
+            <p><b>Trạng thái:</b>
+                <span :class="statusClass(selectedUser?.employee?.status)">
+                    {{ statusText(selectedUser?.employee?.status) }}
+                </span>
+            </p>
         </a-modal>
 
         <a-modal v-model:open="isEditModalOpen" @update:open="(value) => isEditModalOpen = value" ok-text="Lưu"
@@ -291,5 +299,17 @@ const deleteUser = async () => {
     } catch (error) {
         console.log(error)
     }
+}
+
+const statusText = (status) => {
+    if (status === 'active') return 'Đang làm'
+    if (status === 'inactive') return 'Nghỉ việc'
+    return status || 'Không xác định'
+}
+
+const statusClass = (status) => {
+    if (status === 'active') return 'text-success'
+    if (status === 'inactive') return 'text-danger'
+    return 'text-muted'
 }
 </script>

@@ -36,6 +36,12 @@
                 </li>
 
                 <li>
+                    <router-link to="/admin/shifts" class="nav-link text-black">
+                        <i class="fa-solid fa-clock me-2"></i>Ca làm việc
+                    </router-link>
+                </li>
+
+                <li>
                     <router-link to="/admin/file" class="nav-link text-black">
                         <i class="fa-solid fa-user me-2"></i>Hồ sơ
                     </router-link>

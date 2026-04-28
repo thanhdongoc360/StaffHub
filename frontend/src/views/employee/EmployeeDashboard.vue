@@ -40,13 +40,13 @@
                                 <h2 class="mb-3">Thông tin cá nhân</h2>
                                 <p><strong>Họ tên:</strong> {{ userStore.user?.name }}</p>
                                 <p><strong>Email:</strong> {{ userStore.user?.email }}</p>
-                                <p><strong>Vị trí:</strong> {{ userStore.user?.employee.position }}</p>
-                                <p><strong>Phòng ban:</strong> {{ userStore.user?.employee.department }}</p>
+                                <p><strong>Vị trí:</strong> {{ userStore.user?.employee?.position }}</p>
+                                <p><strong>Phòng ban:</strong> {{ userStore.user?.employee?.department }}</p>
                                 <p>
                                     <strong>Trạng thái:</strong>
                                     <span
-                                        :class="['status-badge', employeeStatusClass(userStore.user?.employee.status)]">
-                                        {{ formatStatus(userStore.user?.employee.status) }}
+                                        :class="['status-badge', employeeStatusClass(userStore.user?.employee?.status)]">
+                                        {{ formatStatus(userStore.user?.employee?.status) }}
                                     </span>
                                 </p>
                             </div>
@@ -55,7 +55,28 @@
                         <!-- Lịch làm việc -->
                         <div class="col-12 col-xl-8">
                             <div class="card p-3 h-100">
-                                <h2 class="mb-3">Lịch làm việc</h2>
+                                <h2 class="mb-3">Lịch làm việc tuần này</h2>
+
+                                <div v-if="schedules.length === 0">
+                                    Không có lịch làm việc
+                                </div>
+
+                                <div v-else class="table-responsive">
+                                    <table class="table">
+                                        <thead>
+                                            <tr>
+                                                <th>Ngày</th>
+                                                <th>Ca</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr v-for="item in schedules" :key="item.id">
+                                                <td>{{ formatDate(item.work_date) }}</td>
+                                                <td>{{ item.shift?.name }}</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -122,6 +143,8 @@ const userStore = useUserStore()
 const showSidebar = ref(false)
 const leaveData = ref([]);
 
+const schedules = ref([])
+
 const fetchLeaveHistory = async () => {
     try {
         const res = await http.get('/leaves');
@@ -149,28 +172,7 @@ const statusClass = (status) => {
     return 'status-default'
 }
 
-onMounted(async () => {
-    try {
-        const token = localStorage.getItem('token')
 
-        if (!userStore.user) {
-            const cachedUser = localStorage.getItem('user')
-            if (cachedUser) {
-                userStore.setUser(JSON.parse(cachedUser))
-            }
-        }
-
-        if (!userStore.user && token) {
-            const response = await http.get('/user')
-            userStore.setUser(response.data)
-            localStorage.setItem('user', JSON.stringify(response.data))
-        }
-
-        console.log('employee info:', userStore.user)
-    } catch (error) {
-        console.log('Không lấy được thông tin employee:', error?.response?.data || error)
-    }
-})
 
 const formatStatus = (status) => {
     const value = (status || '').toLowerCase()
@@ -190,10 +192,49 @@ const employeeStatusClass = (status) => {
     return 'status-default'
 }
 
-onMounted(() => {
-    fetchLeaveHistory();
-});
+const formatDate = (date) => {
+    if (!date) return '-'
+
+    const parsedDate = new Date(date)
+
+    if (Number.isNaN(parsedDate.getTime())) return date
+
+    return parsedDate.toLocaleDateString('vi-VN')
+}
+
+const fetchSchedule = async () => {
+    try {
+        const res = await http.get('/schedule/my?type=week')
+        schedules.value = res.data
+    } catch (error) {
+        console.log('Không lấy được lịch làm việc:', error)
+    }
+}
+
+onMounted(async () => {
+    try {
+        const token = localStorage.getItem('token')
+
+        if (!token) return
+
+        // 👇 đảm bảo axios có token
+        http.defaults.headers.common['Authorization'] = `Bearer ${token}`
+
+        if (!userStore.user) {
+            const response = await http.get('/user')
+            userStore.setUser(response.data)
+        }
+
+        await fetchSchedule()
+        await fetchLeaveHistory()
+
+    } catch (error) {
+        console.log('Lỗi dashboard:', error?.response || error)
+    }
+})
 </script>
+
+
 
 <style scoped>
 .card {
@@ -236,10 +277,12 @@ onMounted(() => {
 }
 
 .status-active {
-    background-color: #198754; /* xanh lá */
+    background-color: #198754;
+    /* xanh lá */
 }
 
 .status-inactive {
-    background-color: #6c757d; /* xám */
+    background-color: #6c757d;
+    /* xám */
 }
 </style>

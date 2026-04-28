@@ -21,7 +21,10 @@
 
                     <div
                         class="d-flex flex-column flex-lg-row justify-content-between align-items-start align-items-lg-center mt-3 gap-2">
-                        <h1 class="mb-0">Bảng điều khiển phòng ban</h1>
+                        <h1 class="mb-0">
+                            Bảng điều khiển phòng ban:
+                            <span class="text-primary">{{ department }}</span>
+                        </h1>
                     </div>
 
                     <div class="row mt-4 g-3">
@@ -117,6 +120,7 @@ import http from '../../services/http'
 const users = ref([])
 const totalUsers = ref(0)
 const pendingLeaves = ref(0)
+const department = ref('')
 const showSidebar = ref(false)
 
 const fetchDashboard = async () => {
@@ -126,6 +130,7 @@ const fetchDashboard = async () => {
         totalUsers.value = res.data.total
         users.value = res.data.users
         pendingLeaves.value = res.data.pending_leaves
+        department.value = res.data.department || res.data.users?.[0]?.employee?.department || ''
     } catch (error) {
         console.log(error)
     }

@@ -20,20 +20,31 @@
                     <div class="row mt-2 mt-lg-3">
                         <h1 class="mb-3">Hiệu suất toàn công ty</h1>
 
-                        <div class="mt-3 d-flex gap-2 flex-wrap">
-                            <a-input placeholder="Tìm tên / mã NV" v-model:value="search" />
+                        <div class="mt-3 filter-panel">
+                            <div class="d-flex flex-column flex-md-row flex-wrap gap-3">
+                                <div class="filter-item filter-item-search">
+                                    <label class="form-label fw-semibold mb-1">Tìm kiếm</label>
+                                    <input v-model="search" placeholder="Tên / mã NV" class="form-control w-100"
+                                        @keyup.enter="fetchData" />
+                                </div>
 
-                            <a-select v-model:value="month">
-                                <a-select-option v-for="m in 12" :key="m" :value="m">
-                                    Tháng {{ m }}
-                                </a-select-option>
-                            </a-select>
+                                <div class="filter-item filter-item-sm">
+                                    <label class="form-label fw-semibold mb-1">Tháng</label>
+                                    <select v-model="month" class="form-select w-100" @change="fetchData">
+                                        <option v-for="m in 12" :key="m" :value="m">Tháng {{ m }}</option>
+                                    </select>
+                                </div>
 
-                            <a-input type="number" v-model:value="year" />
+                                <div class="filter-item filter-item-sm">
+                                    <label class="form-label fw-semibold mb-1">Năm</label>
+                                    <input v-model="year" type="number" class="form-control w-100"
+                                        @change="fetchData" />
+                                </div>
 
-                            <a-button type="primary" @click="fetchData">
-                                Tìm kiếm
-                            </a-button>
+                                <div class="filter-item filter-item-xs d-flex align-items-end">
+                                    <button class="btn btn-primary w-100" @click="fetchData">Tìm kiếm</button>
+                                </div>
+                            </div>
                         </div>
 
                         <div class="row mt-4 g-3">
@@ -194,3 +205,31 @@ const statusText = (status) => {
 
 onMounted(fetchData)
 </script>
+
+<style scoped>
+.filter-item {
+    flex: 1 1 250px;
+    min-width: 0;
+}
+
+.filter-item-search {
+    flex: 0 1 520px;
+}
+
+.filter-item-sm {
+    flex: 0 1 180px;
+}
+
+.filter-item-xs {
+    flex: 0 1 150px;
+}
+
+@media (max-width: 576px) {
+    .filter-item,
+    .filter-item-search,
+    .filter-item-sm,
+    .filter-item-xs {
+        flex-basis: 100%;
+    }
+}
+</style>
