@@ -14,7 +14,12 @@ return new class extends Migration
     public function up()
     {
         Schema::table('users', function (Blueprint $table) {
-            $table->dropUnique('users_role_unique');
+            // Chỉ xóa nếu constraint tồn tại
+            try {
+                $table->dropUnique('users_role_unique');
+            } catch (\Exception $e) {
+                // Ignore nếu constraint không tồn tại
+            }
         });
     }
 
