@@ -1,0 +1,48 @@
+# backup of previous ci-frontend.yml
+name: Frontend CI (Vue 3 + Vite)
+
+on:
+  push:
+    branches: [main, develop, staging]
+    paths:
+      - 'frontend/**'
+      - '.github/workflows/ci-frontend.yml'
+  pull_request:
+    branches: [main, develop, staging]
+    paths:
+      - 'frontend/**'
+
+jobs:
+  build:
+    name: Build & Verify Vue App
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [18.x, 20.x]
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: 'npm'
+          cache-dependency-path: frontend/package-lock.json
+
+      - name: Install dependencies
+        working-directory: frontend
+        run: npm ci
+
+      - name: Build Vue application
+        working-directory: frontend
+        run: npm run build
+
+      - name: Upload build artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: frontend-dist-node-${{ matrix.node-version }}
+          path: frontend/dist/
+          retention-days: 1
