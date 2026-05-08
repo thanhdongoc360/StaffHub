@@ -18,7 +18,8 @@ jobs:
 
     strategy:
       matrix:
-        node-version: [18.x, 20.x]
+        # Vite v7+ requires Node >= 20.19; remove Node 18 from CI matrix
+        node-version: [20.x, 22.x]
 
     steps:
       - name: Checkout code
