@@ -2,7 +2,7 @@
 
 namespace Tests\Unit;
 
-use PHPUnit\Framework\TestCase;
+use Tests\TestCase;
 
 class StringTest extends TestCase
 {
@@ -15,6 +15,6 @@ class StringTest extends TestCase
     public function test_string_length()
     {
         $str = 'StaffHub';
-        $this->assertEquals(7, strlen($str));
+        $this->assertEquals(8, strlen($str));
     }
 }

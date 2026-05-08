@@ -2,7 +2,7 @@
 
 namespace Tests\Unit;
 
-use PHPUnit\Framework\TestCase;
+use Tests\TestCase;
 use App\Models\Employee;
 use Illuminate\Database\Eloquent\Relations\Relation;
 
