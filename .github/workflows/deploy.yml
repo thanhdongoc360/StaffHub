@@ -48,3 +48,12 @@ jobs:
             **/.git*
             **/.env
             **/node_modules/**
+            **/vendor/**
+            **/tests/**
+            **/Dockerfile
+            **/phpunit.xml
+            **/README.md
+            **/storage/framework/cache/**
+            **/storage/framework/sessions/**
+            **/storage/framework/testing/**
+            **/storage/logs/**
