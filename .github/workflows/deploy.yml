@@ -13,6 +13,7 @@ jobs:
       - name: Checkout source
         uses: actions/checkout@v4
 
+      # FRONTEND
       - name: Install dependencies
         run: npm install
         working-directory: frontend
@@ -21,7 +22,7 @@ jobs:
         run: npm run build
         working-directory: frontend
 
-      - name: Deploy to FTP
+      - name: Deploy frontend
         uses: SamKirkland/FTP-Deploy-Action@v4.3.5
         with:
           server: ${{ secrets.FTP_SERVER }}
@@ -31,3 +32,19 @@ jobs:
           port: 21
           local-dir: frontend/dist/
           server-dir: public_html/
+
+      # BACKEND
+      - name: Deploy backend
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
+        with:
+          server: ${{ secrets.FTP_SERVER }}
+          username: ${{ secrets.FTP_USERNAME }}
+          password: ${{ secrets.FTP_PASSWORD }}
+          protocol: ftps
+          port: 21
+          local-dir: backend/
+          server-dir: laravel_app/
+          exclude: |
+            **/.git*
+            **/.env
+            **/node_modules/**
